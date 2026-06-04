@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TyreDesk — Retail Tyre Showroom</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+/* ===== BASE ===== */
+*{box-sizing:border-box}
+body{margin:0;background:#0D1117;color:#E2E8F0;font-family:'Inter',system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+.mono{font-family:'JetBrains Mono',monospace}
+a{color:inherit}
+::-webkit-scrollbar{height:8px;width:8px}
+::-webkit-scrollbar-thumb{background:#2D3748;border-radius:8px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ===== TOP NAV ===== */
+#topNav{position:sticky;top:0;z-index:200;background:rgba(13,17,23,.92);backdrop-filter:blur(12px);border-bottom:1px solid #2D3748;display:flex;align-items:center;height:64px;padding:0 24px;gap:20px}
+.nav-brand{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.brand-logo{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#F97316,#F59E0B);display:flex;align-items:center;justify-content:center;color:#0D1117}
+.brand-logo i{width:20px;height:20px}
+.brand-name{font-weight:800;font-size:1.15rem;letter-spacing:-.3px}
+.brand-dot{color:#F97316}
+.search-tabs{display:flex;gap:6px;margin-left:8px;overflow-x:auto;scrollbar-width:none}
+.search-tabs::-webkit-scrollbar{display:none}
+.stab{display:flex;align-items:center;gap:7px;background:transparent;border:1px solid transparent;color:#94A3B8;padding:8px 14px;border-radius:9px;font-size:.86rem;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit;transition:.15s}
+.stab i{width:16px;height:16px}
+.stab:hover{color:#E2E8F0;background:#161B27}
+.stab.active{color:#F97316;background:rgba(249,115,22,.12);border-color:rgba(249,115,22,.4)}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.badge-demo{font-size:.66rem;font-weight:800;letter-spacing:1px;color:#F59E0B;border:1px solid rgba(245,158,11,.5);padding:4px 9px;border-radius:6px;background:rgba(245,158,11,.08)}
+
+/* ===== HERO STATS ===== */
+.hero-bar{display:flex;border-bottom:1px solid #2D3748;overflow-x:auto;scrollbar-width:none}
+.hero-bar::-webkit-scrollbar{display:none}
+.hero-stat{flex:1;min-width:160px;padding:16px 24px;border-right:1px solid #2D3748}
+.stat-n{font-size:1.6rem;font-weight:900;color:#F97316;line-height:1}
+.stat-l{font-size:.72rem;color:#94A3B8;margin-top:3px}
+
+/* ===== MAIN ===== */
+.main-content{max-width:1300px;margin:0 auto;padding:28px 24px 80px}
+.tab-panel.hidden{display:none}
+.tab-panel.active{display:block}
+
+/* ===== CARDS / GENERIC ===== */
+.card{background:#161B27;border:1px solid #2D3748;border-radius:14px}
+.intro-card{background:#161B27;border:1px solid #2D3748;border-left:4px solid #F97316;border-radius:14px;padding:22px 24px;margin-bottom:24px}
+.intro-card h1{margin:0 0 6px;font-size:1.5rem;font-weight:800;letter-spacing:-.4px}
+.intro-card p{margin:0 0 14px;color:#94A3B8;font-size:.95rem}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap}
+.pill{font-size:.74rem;font-weight:600;color:#cbd5e1;background:#0D1117;border:1px solid #2D3748;padding:5px 12px;border-radius:20px}
+
+/* ===== STEP TRACKER ===== */
+.tracker{display:flex;align-items:center;margin:0 0 26px;padding:0 4px}
+.tk-step{display:flex;align-items:center;flex:0 0 auto}
+.tk-circle{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;background:#161B27;border:2px solid #2D3748;color:#64748B;transition:.2s}
+.tk-step.active .tk-circle{background:#F97316;border-color:#F97316;color:#0D1117}
+.tk-step.done .tk-circle{background:#00D26A;border-color:#00D26A;color:#0D1117}
+.tk-label{font-size:.78rem;margin-left:9px;color:#64748B;font-weight:600}
+.tk-step.active .tk-label{color:#F97316}
+.tk-step.done .tk-label{color:#00D26A}
+.tk-line{flex:1;height:2px;background:#2D3748;margin:0 12px;min-width:24px}
+.tk-step.done + .tk-line{background:#00D26A}
+
+/* ===== SELECTOR STEPS ===== */
+.step-block{margin-bottom:22px;animation:slideIn .2s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.step-head{font-size:.82rem;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px}
+.opt-grid{display:grid;gap:10px}
+.grid-make{grid-template-columns:repeat(4,1fr)}
+.grid-model{grid-template-columns:repeat(3,1fr)}
+.grid-year{display:flex;gap:10px;flex-wrap:wrap}
+.grid-trim{display:flex;gap:10px;flex-wrap:wrap}
+.opt-btn{position:relative;display:flex;align-items:center;gap:10px;background:#161B27;border:1px solid #2D3748;color:#E2E8F0;padding:13px 15px;border-radius:11px;cursor:pointer;font-family:inherit;font-size:.9rem;font-weight:600;text-align:left;transition:.15s}
+.opt-btn:hover{border-color:#475569;transform:translateY(-1px)}
+.opt-btn.sel{border-color:#F97316;background:rgba(249,115,22,.1)}
+.opt-btn.sel .opt-check{opacity:1}
+.opt-ico{width:30px;height:30px;border-radius:8px;background:#0D1117;border:1px solid #2D3748;display:flex;align-items:center;justify-content:center;font-weight:800;color:#F97316;font-size:.85rem;flex-shrink:0}
+.opt-check{position:absolute;top:8px;right:10px;color:#F97316;opacity:0;transition:.15s}
+.opt-check i{width:16px;height:16px}
+.year-btn,.trim-btn{padding:11px 18px;min-width:76px;justify-content:center}
+
+/* ===== RESULTS ===== */
+.results-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:6px}
+.veh-summary{font-size:1.15rem;font-weight:800}
+.oem-row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 18px;align-items:center}
+.oem-lbl{font-size:.78rem;color:#94A3B8}
+.oem-chip{font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:600;color:#00D26A;background:rgba(0,210,106,.1);border:1px solid rgba(0,210,106,.35);padding:5px 11px;border-radius:7px}
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.fbtn{background:#161B27;border:1px solid #2D3748;color:#94A3B8;padding:7px 14px;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s}
+.fbtn:hover{color:#E2E8F0}
+.fbtn.active{color:#F97316;border-color:rgba(249,115,22,.5);background:rgba(249,115,22,.1)}
+.cards-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.ghost-btn{background:transparent;border:1px solid #2D3748;color:#94A3B8;padding:10px 18px;border-radius:9px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit;margin-top:24px;display:inline-flex;align-items:center;gap:7px;transition:.15s}
+.ghost-btn:hover{color:#E2E8F0;border-color:#475569}
+.ghost-btn i{width:15px;height:15px}
+.empty-note{color:#94A3B8;font-size:.9rem;padding:30px;text-align:center;border:1px dashed #2D3748;border-radius:12px}
+
+/* ===== TYRE CARD ===== */
+.tyre-card{background:#161B27;border:1px solid #2D3748;border-radius:14px;padding:18px;transition:.18s;display:flex;flex-direction:column;gap:13px}
+.tyre-card:hover{transform:translateY(-3px);border-color:#F97316;box-shadow:0 14px 34px rgba(0,0,0,.45)}
+.tc-row1{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.chip{font-size:.7rem;font-weight:700;padding:4px 10px;border-radius:7px;display:inline-flex;align-items:center;gap:5px}
+.brand-chip{color:#0D1117}
+.seg-chip{background:#0D1117;border:1px solid #2D3748;color:#cbd5e1}
+.season-chip i{width:12px;height:12px}
+.season-summer{background:rgba(245,158,11,.12);color:#F59E0B;border:1px solid rgba(245,158,11,.4)}
+.season-winter{background:rgba(59,130,246,.12);color:#3B82F6;border:1px solid rgba(59,130,246,.4)}
+.season-all{background:rgba(34,211,238,.12);color:#22D3EE;border:1px solid rgba(34,211,238,.4)}
+.stock-badge{margin-left:auto;font-size:.72rem;font-weight:700;padding:5px 11px;border-radius:7px;display:inline-flex;align-items:center;gap:5px}
+.stock-badge i{width:12px;height:12px}
+.stock-in{background:rgba(0,210,106,.12);color:#00D26A;border:1px solid rgba(0,210,106,.4)}
+.stock-order{background:rgba(245,158,11,.12);color:#F59E0B;border:1px solid rgba(245,158,11,.4)}
+.tc-size{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:600;color:#fff;line-height:1.1}
+.tc-size .xl-tag{font-size:.8rem;color:#F97316;margin-left:6px;font-weight:600}
+.tc-size-sub{font-size:.78rem;color:#94A3B8;margin-top:4px}
+.tc-tagline{font-style:italic;color:#94A3B8;font-size:.88rem;line-height:1.4}
+.eu-disc{font-size:.68rem;color:#64748B;margin-bottom:8px}
+.eu-badges{display:flex;gap:8px;flex-wrap:wrap}
+.eu-badge{flex:1;min-width:96px;background:#0D1117;border:1px solid #2D3748;border-radius:9px;padding:9px 10px}
+.eu-top{display:flex;align-items:center;gap:7px}
+.eu-ico{width:14px;height:14px;color:#94A3B8}
+.eu-grade{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;color:#0D1117}
+.eu-name{font-size:.7rem;color:#94A3B8;font-weight:600}
+.eu-plain{font-size:.68rem;color:#cbd5e1;margin-top:5px;line-height:1.3}
+.tc-specs{display:flex;gap:8px;flex-wrap:wrap}
+.spec-chip{font-family:'JetBrains Mono',monospace;font-size:.76rem;font-weight:600;color:#22D3EE;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.3);padding:6px 11px;border-radius:7px;display:inline-flex;align-items:center;gap:6px}
+.spec-chip i{width:13px;height:13px}
+.xl-chip{color:#F97316;background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.4)}
+.gf-block{display:flex;flex-direction:column;gap:9px}
+.gf-line{display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap}
+.gf-head{font-size:.74rem;font-weight:700;white-space:nowrap;padding-top:4px}
+.gf-good{color:#00D26A}.gf-bad{color:#94A3B8}
+.gchip{font-size:.7rem;font-weight:600;padding:4px 9px;border-radius:6px;background:rgba(0,210,106,.1);color:#5eead4;border:1px solid rgba(0,210,106,.3)}
+.bchip{font-size:.7rem;font-weight:600;padding:4px 9px;border-radius:6px;background:#0D1117;color:#94A3B8;border:1px solid #2D3748}
+.tc-footer{display:flex;justify-content:flex-end;border-top:1px solid #2D3748;padding-top:13px;margin-top:2px}
+.reserve-btn{background:linear-gradient(135deg,#F97316,#F59E0B);color:#0D1117;border:none;padding:10px 18px;border-radius:9px;font-weight:700;font-size:.84rem;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:7px;transition:.15s}
+.reserve-btn i{width:15px;height:15px}
+.reserve-btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+
+/* ===== TAB 2 / 3 ===== */
+.global-intro,.manual-intro{margin-bottom:18px}
+.global-intro h2,.manual-intro h2{font-size:1.3rem;font-weight:800;margin:0 0 6px}
+.global-intro p,.manual-intro p{color:#94A3B8;font-size:.92rem;margin:0 0 4px}
+/* Size explorer */
+.size-explorer{background:#161B27;border:1px solid #2D3748;border-radius:14px;padding:22px 24px}
+.explorer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ex-field label{display:block;font-size:.78rem;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+.ex-select{width:100%;background:#0D1117;border:1px solid #2D3748;color:#fff;border-radius:10px;padding:12px 14px;font-size:1rem;outline:none;cursor:pointer;transition:.15s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23F97316' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.ex-select:focus{border-color:#F97316}
+.ex-select:disabled{opacity:.5;cursor:default}
+.explorer-foot{margin-top:18px;border-top:1px dashed #2D3748;padding-top:16px}
+.ex-divider{display:block;font-size:.74rem;color:#64748B;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.size-input-row{display:flex;gap:10px;flex-wrap:wrap}
+.size-input{flex:1;min-width:200px;font-family:'JetBrains Mono',monospace;font-size:1.05rem;background:#0D1117;border:1px solid #2D3748;color:#fff;padding:13px 16px;border-radius:10px;outline:none;transition:.15s}
+.size-input:focus{border-color:#F97316}
+.search-btn{background:linear-gradient(135deg,#F97316,#F59E0B);color:#0D1117;border:none;padding:0 24px;border-radius:10px;font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit}
+.search-btn:hover{filter:brightness(1.08)}
+.manual-wrap{max-width:560px;margin:0 auto;text-align:center}
+.manual-wrap .size-input-row{justify-content:center}
+.manual-hint{margin-top:24px;color:#64748B;font-size:.85rem}
+
+/* ===== CHATBOT ===== */
+.chat-pulse{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;z-index:298;pointer-events:none;display:none}
+.chat-pulse.show{display:block;animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(249,115,22,.5)}70%{box-shadow:0 0 0 16px rgba(249,115,22,0)}100%{box-shadow:0 0 0 0 rgba(249,115,22,0)}}
+#chatTrigger{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#F97316,#F59E0B);border:none;cursor:pointer;z-index:300;display:flex;align-items:center;justify-content:center;color:#0D1117;box-shadow:0 8px 24px rgba(249,115,22,.4);transition:.2s}
+#chatTrigger:hover{transform:scale(1.06)}
+#chatTrigger .chat-icon,#chatTrigger .close-icon{width:24px;height:24px;position:absolute;transition:.2s}
+#chatTrigger .close-icon{opacity:0;transform:rotate(-90deg)}
+#chatTrigger.open .chat-icon{opacity:0;transform:rotate(90deg)}
+#chatTrigger.open .close-icon{opacity:1;transform:rotate(0)}
+#chatNotif{position:fixed;bottom:62px;right:22px;width:20px;height:20px;border-radius:50%;background:#EF4444;color:#fff;font-size:.7rem;font-weight:800;display:none;align-items:center;justify-content:center;z-index:301;border:2px solid #0D1117}
+#chatNotif.show{display:flex}
+#chatPanel{position:fixed;bottom:92px;right:24px;width:360px;height:520px;max-height:calc(100vh - 120px);background:#161B27;border:1px solid #2D3748;border-radius:16px;z-index:299;display:none;flex-direction:column;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+#chatPanel.open{display:flex;animation:slideIn .2s ease}
+.chat-header{background:linear-gradient(120deg,#F97316,#22D3EE);padding:14px 16px;display:flex;align-items:center;gap:11px}
+.chat-bot-ico{width:36px;height:36px;border-radius:10px;background:rgba(13,17,23,.25);display:flex;align-items:center;justify-content:center;color:#0D1117}
+.chat-bot-ico i{width:20px;height:20px}
+.chat-title{font-weight:800;color:#0D1117;font-size:.98rem;line-height:1.1}
+.chat-online{font-size:.7rem;color:#0D1117;opacity:.85;display:flex;align-items:center;gap:5px;margin-top:2px}
+.online-dot{width:7px;height:7px;border-radius:50%;background:#0D1117}
+.chat-head-actions{margin-left:auto;display:flex;gap:6px}
+.chat-act{background:rgba(13,17,23,.18);border:none;color:#0D1117;width:30px;height:30px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.chat-act i{width:16px;height:16px}
+.chat-ctx{padding:8px 16px;background:#0D1117;border-bottom:1px solid #2D3748;font-size:.74rem;color:#94A3B8;display:flex;align-items:center;gap:6px}
+.chat-ctx i{width:13px;height:13px;color:#F97316}
+.chat-ctx b{color:#E2E8F0;font-weight:600}
+.chat-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:84%;padding:10px 13px;border-radius:13px;font-size:.86rem;line-height:1.45;white-space:pre-wrap}
+.msg.bot{background:#0D1117;border:1px solid #2D3748;align-self:flex-start;border-bottom-left-radius:4px}
+.msg.user{background:linear-gradient(135deg,#F97316,#F59E0B);color:#0D1117;align-self:flex-end;border-bottom-right-radius:4px;font-weight:500}
+.typing{display:flex;gap:4px;padding:12px 14px;background:#0D1117;border:1px solid #2D3748;border-radius:13px;align-self:flex-start;width:fit-content}
+.typing span{width:7px;height:7px;border-radius:50%;background:#64748B;animation:blink 1.2s infinite}
+.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,60%,100%{opacity:.3}30%{opacity:1}}
+.chat-err{margin:0 16px 8px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.4);color:#F59E0B;font-size:.78rem;padding:8px 12px;border-radius:9px;display:none}
+.chat-err.show{display:block}
+.quick-prompts{display:flex;gap:7px;flex-wrap:wrap;padding:0 16px 10px}
+.qp{font-size:.74rem;background:#0D1117;border:1px solid #2D3748;color:#cbd5e1;padding:6px 11px;border-radius:16px;cursor:pointer;font-family:inherit;transition:.15s}
+.qp:hover{border-color:#F97316;color:#F97316}
+.chat-input-row{display:flex;gap:8px;padding:12px 14px;border-top:1px solid #2D3748;align-items:flex-end}
+#chatInput{flex:1;background:#0D1117;border:1px solid #2D3748;color:#E2E8F0;border-radius:10px;padding:10px 12px;font-family:inherit;font-size:.86rem;resize:none;max-height:90px;outline:none;line-height:1.4}
+#chatInput:focus{border-color:#F97316}
+.chat-send{background:linear-gradient(135deg,#F97316,#F59E0B);border:none;color:#0D1117;width:38px;height:38px;border-radius:10px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.chat-send i{width:18px;height:18px}
+
+/* ===== MODAL ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);z-index:400;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal-card{width:480px;max-width:100%;background:#161B27;border:1px solid #2D3748;border-radius:18px;padding:26px;box-shadow:0 24px 60px rgba(0,0,0,.6);animation:slideIn .2s ease}
+.modal-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.modal-ico{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,#F97316,#F59E0B);display:flex;align-items:center;justify-content:center;color:#0D1117}
+.modal-ico i{width:22px;height:22px}
+.modal-card h2{margin:0;font-size:1.25rem;font-weight:800}
+.modal-sub{color:#94A3B8;font-size:.86rem;margin:4px 0 20px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.8rem;font-weight:600;color:#cbd5e1;margin-bottom:6px}
+.field input{width:100%;background:#0D1117;border:1px solid #2D3748;color:#fff;border-radius:10px;padding:12px 14px;font-family:inherit;font-size:.92rem;outline:none;transition:.15s}
+.field input:focus{border-color:#F97316}
+.field.err input{border-color:#EF4444}
+.field-msg{font-size:.72rem;color:#EF4444;margin-top:5px;display:none}
+.field.err .field-msg{display:block}
+.modal-submit{width:100%;background:linear-gradient(135deg,#F97316,#F59E0B);color:#0D1117;border:none;padding:13px;border-radius:11px;font-weight:800;font-size:.95rem;cursor:pointer;font-family:inherit;margin-top:6px}
+.modal-submit:hover{filter:brightness(1.08)}
+.modal-submit:disabled{opacity:.6;cursor:default}
+.modal-result{text-align:center;padding:14px 0}
+.modal-result .rok{width:56px;height:56px;border-radius:50%;background:rgba(0,210,106,.15);color:#00D26A;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.modal-result .rok i{width:30px;height:30px}
+.modal-result p{color:#E2E8F0;font-size:.95rem}
+.modal-result.err .rok{background:rgba(245,158,11,.15);color:#F59E0B}
+.modal-close{position:absolute;top:16px;right:16px;background:transparent;border:none;color:#64748B;cursor:pointer}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:760px){
+  .grid-make{grid-template-columns:repeat(2,1fr)}
+  .grid-model{grid-template-columns:repeat(2,1fr)}
+  .cards-grid{grid-template-columns:1fr}
+  .explorer-grid{grid-template-columns:1fr}
+  .tracker{overflow-x:auto;scrollbar-width:none}
+  .main-content{padding:20px 14px 80px}
+}
+@media(max-width:430px){
+  .brand-name{font-size:1rem}
+  #chatPanel{width:calc(100vw - 24px);right:12px;left:12px}
+  #chatTrigger{right:16px;bottom:16px}
+  .chat-pulse{right:16px;bottom:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- ████ TOP NAV ████ -->
+<header id="topNav">
+  <div class="nav-brand">
+    <div class="brand-logo"><i data-lucide="circle-dot"></i></div>
+    <div class="brand-name">TyreDesk<span class="brand-dot">.</span>pro</div>
+  </div>
+  <nav class="search-tabs">
+    <button class="stab active" onclick="switchTab('vehicle')" id="t-vehicle"><i data-lucide="car"></i><span>Popular Vehicles</span></button>
+    <button class="stab" onclick="switchTab('global')" id="t-global"><i data-lucide="globe"></i><span>Any Vehicle Worldwide</span></button>
+    <button class="stab" onclick="switchTab('manual')" id="t-manual"><i data-lucide="keyboard"></i><span>Enter Size</span></button>
+  </nav>
+  <div class="nav-right"><span class="badge-demo">DEMO</span></div>
+</header>
+
+<!-- ████ HERO STATS ████ -->
+<div class="hero-bar">
+  <div class="hero-stat"><div class="stat-n">95</div><div class="stat-l">Tyres In Stock</div></div>
+  <div class="hero-stat"><div class="stat-n">25</div><div class="stat-l">Vehicle Makes</div></div>
+  <div class="hero-stat"><div class="stat-n">250+</div><div class="stat-l">Fitments Covered</div></div>
+  <div class="hero-stat"><div class="stat-n">5</div><div class="stat-l">Tyre Lines · Browse by Size</div></div>
+</div>
+
+<!-- ████ MAIN ████ -->
+<div class="main-content">
+
+  <!-- TAB 1: POPULAR VEHICLES -->
+  <div id="tab-vehicle" class="tab-panel active">
+    <div class="intro-card">
+      <h1>Find Your Perfect Tyre</h1>
+      <p>Select your vehicle — we show compatible tyres instantly.</p>
+      <div class="pill-row">
+        <span class="pill">25 Makes Covered</span>
+        <span class="pill">EU Labels Included</span>
+        <span class="pill">Plain English Specs</span>
+      </div>
+    </div>
+    <div class="tracker" id="tracker"></div>
+    <div id="selectorSteps"></div>
+    <div id="vehicleResults"></div>
+  </div>
+
+  <!-- TAB 2: SEARCH BY SIZE (native explorer) -->
+  <div id="tab-global" class="tab-panel hidden">
+    <div class="global-intro">
+      <h2>Search our full range by size</h2>
+      <p>Browse every tyre we stock. Pick your width, profile and rim — or type a size directly.</p>
+      <div class="pill-row" style="margin-top:10px">
+        <span class="pill">95 Sizes In Stock</span>
+        <span class="pill">5 Tyre Lines</span>
+        <span class="pill">Cars · SUV · Commercial · Performance</span>
+      </div>
+    </div>
+    <div class="size-explorer">
+      <div class="explorer-grid">
+        <div class="ex-field">
+          <label>Width (mm)</label>
+          <select id="exWidth" class="ex-select mono"><option value="">Any width</option></select>
+        </div>
+        <div class="ex-field">
+          <label>Profile (%)</label>
+          <select id="exProfile" class="ex-select mono"><option value="">Any profile</option></select>
+        </div>
+        <div class="ex-field">
+          <label>Rim (inch)</label>
+          <select id="exRim" class="ex-select mono"><option value="">Any rim</option></select>
+        </div>
+      </div>
+      <div class="explorer-foot">
+        <span class="ex-divider">or type a size</span>
+        <div class="size-input-row">
+          <input class="size-input mono" id="globalSizeInput" placeholder="e.g. 235/55R18" autocomplete="off">
+          <button class="search-btn" onclick="checkGlobalStock()">Check Stock</button>
+        </div>
+      </div>
+    </div>
+    <div id="globalResults" style="margin-top:22px"></div>
+  </div>
+
+  <!-- TAB 3: MANUAL ENTRY -->
+  <div id="tab-manual" class="tab-panel hidden">
+    <div class="manual-wrap">
+      <div class="manual-intro">
+        <h2>Enter your tyre size</h2>
+        <p>Type the size on your current tyre's sidewall.</p>
+      </div>
+      <div class="size-input-row">
+        <input class="size-input mono" id="manualSizeInput" placeholder="e.g. 235/55R18" autocomplete="off">
+        <button class="search-btn" onclick="searchManual()">Search</button>
+      </div>
+      <div id="manualResults" style="margin-top:24px;text-align:left"></div>
+      <div class="manual-hint">Not sure of your size? Use the Popular Vehicles tab.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ████ FLOATING CHATBOT ████ -->
+<div class="chat-pulse" id="chatPulse"></div>
+<div id="chatNotif">1</div>
+<button id="chatTrigger" onclick="toggleChat()">
+  <i data-lucide="bot" class="chat-icon"></i>
+  <i data-lucide="x" class="close-icon"></i>
+</button>
+<div id="chatPanel">
+  <div class="chat-header">
+    <div class="chat-bot-ico"><i data-lucide="bot"></i></div>
+    <div>
+      <div class="chat-title">Tyre Advisor</div>
+      <div class="chat-online"><span class="online-dot"></span>Online</div>
+    </div>
+    <div class="chat-head-actions">
+      <button class="chat-act" title="Reset conversation" onclick="resetChat()"><i data-lucide="rotate-ccw"></i></button>
+      <button class="chat-act" title="Close" onclick="toggleChat()"><i data-lucide="chevron-down"></i></button>
+    </div>
+  </div>
+  <div class="chat-ctx" id="chatCtx"><i data-lucide="car"></i><span>No vehicle selected yet</span></div>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="chat-err" id="chatErr">Connection error — please try again.</div>
+  <div class="quick-prompts" id="quickPrompts"></div>
+  <div class="chat-input-row">
+    <textarea id="chatInput" rows="1" placeholder="Ask about size, grip, load…"></textarea>
+    <button class="chat-send" onclick="sendFromInput()"><i data-lucide="send"></i></button>
+  </div>
+</div>
+
+<!-- ████ LEAD CAPTURE MODAL ████ -->
+<div class="modal-overlay" id="reserveModal">
+  <div class="modal-card" style="position:relative">
+    <button class="modal-close" onclick="closeReserve()"><i data-lucide="x"></i></button>
+    <div id="reserveForm">
+      <div class="modal-head">
+        <div class="modal-ico"><i data-lucide="circle-dot"></i></div>
+        <h2>Reserve This Tyre</h2>
+      </div>
+      <p class="modal-sub">We will confirm availability and contact you within 2 hours.</p>
+      <div class="field" id="f-name">
+        <label>Full Name</label>
+        <input type="text" id="leadName" placeholder="John Smith">
+        <div class="field-msg">Please enter your name.</div>
+      </div>
+      <div class="field" id="f-phone">
+        <label>Phone Number</label>
+        <input type="tel" id="leadPhone" placeholder="+1 555 000 0000">
+        <div class="field-msg">Please enter a valid phone (at least 8 digits).</div>
+      </div>
+      <div class="field" id="f-tyre">
+        <label>Selected Tyre</label>
+        <input type="text" id="leadTyre" placeholder="205/55R16 — VectorX Performance">
+        <div class="field-msg">Please enter a tyre.</div>
+      </div>
+      <button class="modal-submit" id="leadSubmit" onclick="submitLead()">Reserve Now</button>
+    </div>
+    <div id="reserveResult" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   N8N WEBHOOKS  —  REPLACE BOTH PLACEHOLDERS BEFORE DEPLOY
+   ═══════════════════════════════════════════════════════════════ */
+const N8N_CHATBOT_URL = "https://oussama19.app.n8n.cloud/webhook/tyredesk-chatbot";
+const N8N_LEAD_URL    = "https://oussama19.app.n8n.cloud/webhook/tyredesk-lead";
+
+/* ═══════════════ DECODER TABLES (industry-standard) ═══════════════ */
+const LOAD_KG = {
+  71:345,73:365,74:375,75:387,79:437,81:462,82:475,83:487,84:500,
+  85:515,86:530,87:545,88:560,89:580,90:600,91:615,92:630,93:650,
+  94:670,95:690,96:710,97:730,98:750,99:775,100:800,101:825,102:850,
+  103:875,104:900,105:925,106:950,107:975,108:1000,109:1030,110:1060,
+  111:1090,112:1120,113:1150,114:1180,115:1215,116:1250
+};
+const SPEED_KMH = { 'Q':160,'R':170,'S':180,'T':190,'H':210,'V':240,'W':270,'Y':300,'Z':240 };
+
+// Parse load index + speed letter from a service string e.g. "94V" or "102/100R"
+function decodeService(svc){
+  const m = svc.match(/^(\d+)/);          // first load index (handles "106/104R")
+  const s = svc.match(/([A-Z])\s*$/i);    // trailing speed letter
+  const li = m ? parseInt(m[1]) : 0;
+  const si = s ? s[1].toUpperCase() : '';
+  return { load_kg: LOAD_KG[li]||0, speed_kmh: SPEED_KMH[si]||0, speed_letter: si };
+}
+
+/* ═══════════════ BRAND PROFILES ═══════════════ */
+const PROFILES = {
+  Meridian:{ color:"#6366F1", segment:"Economy • City",
+    tagline:"Reliable everyday performance at a sensible running cost",
+    best_for:["City commuting","Budget-conscious drivers","Low fuel cost"],
+    not_ideal:["High-speed motorway","Sport driving","Deep snow"],
+    eu:{ fuel:"C", wet:"B", noise_db:71 } },
+  VectorX:{ color:"#3B82F6", segment:"Performance • Sedan",
+    tagline:"Confident handling for daily driving and wet-road safety",
+    best_for:["Mixed motorway & city","Wet weather safety","Responsive steering"],
+    not_ideal:["Heavy loads","Off-road","Deep snow"],
+    eu:{ fuel:"B", wet:"A", noise_db:68 } },
+  TerraDrive:{ color:"#F97316", segment:"SUV • 4×4",
+    tagline:"Built for heavier vehicles across motorways and mixed terrain",
+    best_for:["SUV and 4×4 comfort","Motorway cruising","Mixed road conditions"],
+    not_ideal:["Track driving","Deep off-road","Urban fuel efficiency"],
+    eu:{ fuel:"C", wet:"B", noise_db:73 } },
+  TerraDriveC:{ color:"#EF4444", segment:"Commercial • Van",
+    tagline:"Engineered for load-carrying reliability and long service life",
+    best_for:["Commercial deliveries","Heavy loads","Long daily mileage"],
+    not_ideal:["Sport driving","Passenger comfort priority"],
+    eu:{ fuel:"D", wet:"C", noise_db:76 } },
+  ApexUltra:{ color:"#8B5CF6", segment:"High Performance",
+    tagline:"Maximum grip and precision for performance vehicles",
+    best_for:["Sport and spirited driving","Excellent dry grip","High-speed stability"],
+    not_ideal:["Fuel economy","Heavy vehicles","Rough roads"],
+    eu:{ fuel:"B", wet:"A", noise_db:67 } }
+};
+
+/* ═══════════════ FULL INVENTORY — 95 SKUs ═══════════════ */
+const TYRE_INVENTORY = [
+  // ── MERIDIAN — Economy / City (23) ──
+  {size:"145/70R13",service:"71T", xl:false,brand:"Meridian",season:"summer",stock:"in"},
+  {size:"155/65R13",service:"73T", xl:false,brand:"Meridian",season:"summer",stock:"in"},
+  {size:"155/70R13",service:"75T", xl:false,brand:"Meridian",season:"summer",stock:"in"},
+  {size:"155/80R13",service:"79T", xl:false,brand:"Meridian",season:"summer",stock:"order"},
+  {size:"165/60R14",service:"75H", xl:false,brand:"Meridian",season:"summer",stock:"in"},
+  {size:"165/65R14",service:"79H", xl:false,brand:"Meridian",season:"summer",stock:"in"},
+  {size:"165/70R13",service:"79T", xl:false,brand:"Meridian",season:"summer",stock:"in"},
+  {size:"165/70R14",service:"81T", xl:false,brand:"Meridian",season:"summer",stock:"in"},
+  {size:"165/80R14",service:"85T", xl:false,brand:"Meridian",season:"summer",stock:"in"},
+  {size:"175/50R15",service:"75H", xl:false,brand:"Meridian",season:"summer",stock:"order"},
+  {size:"175/65R14",service:"86T", xl:true, brand:"Meridian",season:"summer",stock:"in"},
+  {size:"175/65R15",service:"88H", xl:true, brand:"Meridian",season:"summer",stock:"in"},
+  {size:"175/70R13",service:"82T", xl:false,brand:"Meridian",season:"summer",stock:"in"},
+  {size:"175/70R14",service:"88T", xl:true, brand:"Meridian",season:"summer",stock:"in"},
+  {size:"175/80R14",service:"88T", xl:false,brand:"Meridian",season:"summer",stock:"in"},
+  {size:"185/60R14",service:"82H", xl:false,brand:"Meridian",season:"summer",stock:"in"},
+  {size:"185/60R15",service:"88H", xl:true, brand:"Meridian",season:"summer",stock:"in"},
+  {size:"185/65R14",service:"86H", xl:false,brand:"Meridian",season:"summer",stock:"in"},
+  {size:"185/65R15",service:"92H", xl:true, brand:"Meridian",season:"summer",stock:"in"},
+  {size:"185/70R14",service:"88T", xl:false,brand:"Meridian",season:"summer",stock:"in"},
+  {size:"185/80R14",service:"91T", xl:false,brand:"Meridian",season:"summer",stock:"order"},
+  {size:"195/55R16",service:"87V", xl:false,brand:"Meridian",season:"summer",stock:"in"},
+  {size:"195/65R15",service:"95H", xl:true, brand:"Meridian",season:"summer",stock:"in"},
+  // ── VECTORX — Performance / Sedan (25) ──
+  {size:"185/55R15",service:"86V", xl:true, brand:"VectorX",season:"summer",stock:"in"},
+  {size:"195/50R15",service:"82V", xl:false,brand:"VectorX",season:"summer",stock:"in"},
+  {size:"195/55R15",service:"85V", xl:false,brand:"VectorX",season:"summer",stock:"in"},
+  {size:"205/45R16",service:"87V", xl:true, brand:"VectorX",season:"summer",stock:"in"},
+  {size:"205/45R17",service:"88V", xl:true, brand:"VectorX",season:"summer",stock:"in"},
+  {size:"205/50R17",service:"93V", xl:true, brand:"VectorX",season:"summer",stock:"in"},
+  {size:"205/55R16",service:"94V", xl:true, brand:"VectorX",season:"summer",stock:"in"},
+  {size:"205/55R17",service:"95V", xl:true, brand:"VectorX",season:"summer",stock:"in"},
+  {size:"205/60R16",service:"96V", xl:false,brand:"VectorX",season:"summer",stock:"in"},
+  {size:"205/65R15",service:"94V", xl:false,brand:"VectorX",season:"summer",stock:"in"},
+  {size:"215/40R17",service:"87W", xl:true, brand:"VectorX",season:"summer",stock:"in"},
+  {size:"215/45R16",service:"90V", xl:true, brand:"VectorX",season:"summer",stock:"in"},
+  {size:"215/45R17",service:"91W", xl:true, brand:"VectorX",season:"summer",stock:"in"},
+  {size:"215/55R16",service:"95W", xl:true, brand:"VectorX",season:"summer",stock:"in"},
+  {size:"215/60R16",service:"97V", xl:true, brand:"VectorX",season:"summer",stock:"in"},
+  {size:"215/65R15",service:"98W", xl:true, brand:"VectorX",season:"summer",stock:"in"},
+  {size:"215/65R16",service:"99V", xl:true, brand:"VectorX",season:"summer",stock:"in"},
+  {size:"225/40R18",service:"96H", xl:false,brand:"VectorX",season:"summer",stock:"order"},
+  {size:"225/45R17",service:"102V",xl:true, brand:"VectorX",season:"summer",stock:"in"},
+  {size:"215/50R17",service:"98W", xl:true, brand:"VectorX",season:"summer",stock:"in"},
+  {size:"215/55R17",service:"97W", xl:true, brand:"VectorX",season:"summer",stock:"in"},
+  {size:"225/50R17",service:"91W", xl:true, brand:"VectorX",season:"summer",stock:"in"},
+  {size:"235/45R17",service:"96W", xl:true, brand:"VectorX",season:"summer",stock:"in"},
+  {size:"235/35R19",service:"92W", xl:true, brand:"VectorX",season:"summer",stock:"order"},
+  {size:"255/35R19",service:"94W", xl:true, brand:"VectorX",season:"summer",stock:"order"},
+  // ── TERRADRIVE — SUV / 4x4 (19) ──
+  {size:"205/65R16",service:"95H", xl:false,brand:"TerraDrive",season:"summer",stock:"in"},
+  {size:"215/60R17",service:"100H",xl:true, brand:"TerraDrive",season:"summer",stock:"in"},
+  {size:"215/70R16",service:"100H",xl:false,brand:"TerraDrive",season:"summer",stock:"in"},
+  {size:"215/75R15",service:"100T",xl:false,brand:"TerraDrive",season:"summer",stock:"order"},
+  {size:"225/55R18",service:"98V", xl:false,brand:"TerraDrive",season:"summer",stock:"in"},
+  {size:"225/60R17",service:"103V",xl:true, brand:"TerraDrive",season:"summer",stock:"in"},
+  {size:"225/65R17",service:"102H",xl:false,brand:"TerraDrive",season:"summer",stock:"in"},
+  {size:"235/55R17",service:"103V",xl:true, brand:"TerraDrive",season:"summer",stock:"in"},
+  {size:"235/55R18",service:"104V",xl:true, brand:"TerraDrive",season:"summer",stock:"in"},
+  {size:"235/60R18",service:"107V",xl:true, brand:"TerraDrive",season:"summer",stock:"in"},
+  {size:"235/65R17",service:"108V",xl:true, brand:"TerraDrive",season:"summer",stock:"in"},
+  {size:"235/65R18",service:"110H",xl:true, brand:"TerraDrive",season:"summer",stock:"order"},
+  {size:"235/70R16",service:"106H",xl:false,brand:"TerraDrive",season:"summer",stock:"in"},
+  {size:"245/60R18",service:"105H",xl:false,brand:"TerraDrive",season:"summer",stock:"in"},
+  {size:"245/65R17",service:"111H",xl:true, brand:"TerraDrive",season:"summer",stock:"in"},
+  {size:"245/70R16",service:"107H",xl:false,brand:"TerraDrive",season:"summer",stock:"in"},
+  {size:"255/70R16",service:"111H",xl:false,brand:"TerraDrive",season:"summer",stock:"in"},
+  {size:"265/70R16",service:"112H",xl:false,brand:"TerraDrive",season:"summer",stock:"order"},
+  {size:"265/70R17",service:"115H",xl:false,brand:"TerraDrive",season:"summer",stock:"order"},
+  // ── TERRADRIVE C — Commercial / Van (21) ──
+  {size:"145R13C",   service:"88/86R",  xl:false,brand:"TerraDriveC",season:"summer",stock:"in"},
+  {size:"155R13C",   service:"85/83R",  xl:false,brand:"TerraDriveC",season:"summer",stock:"in"},
+  {size:"165R13C",   service:"91/89R",  xl:false,brand:"TerraDriveC",season:"summer",stock:"in"},
+  {size:"185R14C",   service:"102/100R",xl:false,brand:"TerraDriveC",season:"summer",stock:"in"},
+  {size:"185R15C",   service:"103/101R",xl:false,brand:"TerraDriveC",season:"summer",stock:"in"},
+  {size:"195/70R15C",service:"104/102S",xl:false,brand:"TerraDriveC",season:"summer",stock:"in"},
+  {size:"195/75R16C",service:"107/105S",xl:false,brand:"TerraDriveC",season:"summer",stock:"in"},
+  {size:"195R14C",   service:"106/104R",xl:false,brand:"TerraDriveC",season:"summer",stock:"in"},
+  {size:"195R15C",   service:"106/104R",xl:false,brand:"TerraDriveC",season:"summer",stock:"in"},
+  {size:"205/70R15C",service:"106/104S",xl:false,brand:"TerraDriveC",season:"summer",stock:"in"},
+  {size:"205/75R16C",service:"113/111S",xl:false,brand:"TerraDriveC",season:"summer",stock:"in"},
+  {size:"205R16C",   service:"110/108R",xl:false,brand:"TerraDriveC",season:"summer",stock:"order"},
+  {size:"215/70R15C",service:"109/107S",xl:false,brand:"TerraDriveC",season:"summer",stock:"in"},
+  {size:"215/70R16C",service:"108/106S",xl:false,brand:"TerraDriveC",season:"summer",stock:"in"},
+  {size:"215/75R16C",service:"116/114S",xl:false,brand:"TerraDriveC",season:"summer",stock:"in"},
+  {size:"225/65R16C",service:"112/110S",xl:false,brand:"TerraDriveC",season:"summer",stock:"in"},
+  {size:"225/70R15C",service:"112/110S",xl:false,brand:"TerraDriveC",season:"summer",stock:"in"},
+  {size:"235/65R16C",service:"115/113S",xl:false,brand:"TerraDriveC",season:"summer",stock:"in"},
+  {size:"255/70R15C",service:"112/110S",xl:false,brand:"TerraDriveC",season:"summer",stock:"order"},
+  {size:"215R15C",   service:"109/107R",xl:false,brand:"TerraDriveC",season:"summer",stock:"in"},
+  {size:"225/75R16C",service:"116/114S",xl:false,brand:"TerraDriveC",season:"summer",stock:"in"},
+  // ── APEX ULTRA — High Performance (7) ──
+  {size:"225/40R19",service:"93Y", xl:true,brand:"ApexUltra",season:"summer",stock:"order"},
+  {size:"235/40R18",service:"95Y", xl:true,brand:"ApexUltra",season:"summer",stock:"in"},
+  {size:"235/45R18",service:"98Y", xl:true,brand:"ApexUltra",season:"summer",stock:"in"},
+  {size:"245/45R19",service:"102Y",xl:true,brand:"ApexUltra",season:"summer",stock:"in"},
+  {size:"255/35R19",service:"94W", xl:true,brand:"ApexUltra",season:"summer",stock:"order"},
+  {size:"255/35R20",service:"97Y", xl:true,brand:"ApexUltra",season:"summer",stock:"order"},
+  {size:"255/45R20",service:"105Y",xl:true,brand:"ApexUltra",season:"summer",stock:"order"}
+];
+
+/* ═══════════════ VEHICLE DB — 250+ fitments ═══════════════ */
+const VEHICLE_DB = [
+  // Renault
+  {make:"Renault",model:"Clio",  trim:"Active", years:[2018,2020,2021,2022,2023,2024],sizes:["185/65R15","195/55R16"]},
+  {make:"Renault",model:"Clio",  trim:"Intens", years:[2019,2020,2021,2022,2023,2024],sizes:["185/65R15","195/55R16"]},
+  {make:"Renault",model:"Megane",trim:"Base",   years:[2018,2019,2020,2021,2022,2023],sizes:["205/55R16","205/60R16"]},
+  {make:"Renault",model:"Megane",trim:"GT Line",years:[2019,2020,2021,2022,2023,2024],sizes:["205/55R16","215/45R17"]},
+  {make:"Renault",model:"Duster",trim:"SE",     years:[2018,2019,2020,2021,2022,2023],sizes:["215/65R16","215/60R17"]},
+  {make:"Renault",model:"Duster",trim:"4WD",    years:[2019,2020,2021,2022,2023,2024],sizes:["215/65R16","235/60R18"]},
+  {make:"Renault",model:"Kadjar",trim:"SE",     years:[2018,2019,2020,2021,2022],     sizes:["215/65R17","225/45R17"]},
+  {make:"Renault",model:"Logan", trim:"Active", years:[2018,2019,2020,2021,2022,2023],sizes:["185/65R15","195/65R15"]},
+  // Dacia
+  {make:"Dacia",model:"Sandero",trim:"Access",   years:[2018,2019,2020,2021,2022,2023],sizes:["185/65R15","185/60R15"]},
+  {make:"Dacia",model:"Duster", trim:"Comfort",  years:[2019,2020,2021,2022,2023,2024],sizes:["215/65R16","225/60R17"]},
+  {make:"Dacia",model:"Logan",  trim:"Base",     years:[2018,2019,2020,2021,2022,2023],sizes:["185/65R15","195/65R15"]},
+  {make:"Dacia",model:"Jogger", trim:"Essential",years:[2022,2023,2024],               sizes:["205/60R16","215/60R17"]},
+  // Peugeot
+  {make:"Peugeot",model:"208", trim:"Active",years:[2019,2020,2021,2022,2023,2024],sizes:["195/55R16","205/45R17"]},
+  {make:"Peugeot",model:"308", trim:"Active",years:[2018,2019,2020,2021,2022,2023],sizes:["205/55R16","215/45R17"]},
+  {make:"Peugeot",model:"3008",trim:"Active",years:[2018,2019,2020,2021,2022,2023],sizes:["225/55R18","235/50R19"]},
+  {make:"Peugeot",model:"2008",trim:"Active",years:[2020,2021,2022,2023,2024],     sizes:["205/55R17","215/55R17"]},
+  // Hyundai
+  {make:"Hyundai",model:"Tucson",   trim:"Active",   years:[2018,2019,2020,2021,2022,2023],sizes:["215/65R16","235/55R18"]},
+  {make:"Hyundai",model:"Tucson",   trim:"Executive",years:[2019,2020,2021,2022,2023,2024],sizes:["235/55R18","235/60R18"]},
+  {make:"Hyundai",model:"i20",      trim:"Base",     years:[2018,2019,2020,2021,2022,2023],sizes:["185/65R15","195/55R16"]},
+  {make:"Hyundai",model:"i30",      trim:"Active",   years:[2018,2019,2020,2021,2022,2023],sizes:["205/55R16","225/45R17"]},
+  {make:"Hyundai",model:"Santa Fe", trim:"Premium",  years:[2019,2020,2021,2022,2023,2024],sizes:["235/65R17","255/45R20"]},
+  // Kia
+  {make:"Kia",model:"Sportage",trim:"Active", years:[2018,2019,2020,2021,2022,2023],sizes:["215/65R16","235/55R18"]},
+  {make:"Kia",model:"Sportage",trim:"GT Line",years:[2020,2021,2022,2023,2024],     sizes:["235/55R18","235/50R19"]},
+  {make:"Kia",model:"Rio",     trim:"Base",   years:[2018,2019,2020,2021,2022,2023],sizes:["185/65R15","195/55R16"]},
+  {make:"Kia",model:"Ceed",    trim:"Active", years:[2018,2019,2020,2021,2022,2023],sizes:["205/55R16","225/45R17"]},
+  {make:"Kia",model:"Sorento", trim:"Base",   years:[2019,2020,2021,2022,2023,2024],sizes:["235/65R17","255/45R20"]},
+  // Toyota
+  {make:"Toyota",model:"Corolla",trim:"Base", years:[2018,2019,2020,2021,2022,2023],sizes:["195/65R15","205/55R16"]},
+  {make:"Toyota",model:"Corolla",trim:"Sport",years:[2019,2020,2021,2022,2023,2024],sizes:["205/55R16","225/45R17"]},
+  {make:"Toyota",model:"RAV4",   trim:"Active",years:[2018,2019,2020,2021,2022,2023],sizes:["225/60R18","235/55R18"]},
+  {make:"Toyota",model:"Camry",  trim:"Base", years:[2018,2019,2020,2021,2022,2023],sizes:["215/55R17","225/45R18"]},
+  {make:"Toyota",model:"Yaris",  trim:"Active",years:[2018,2019,2020,2021,2022,2023],sizes:["185/65R15","195/50R16"]},
+  // Volkswagen
+  {make:"Volkswagen",model:"Golf",  trim:"Base",  years:[2018,2019,2020,2021,2022,2023],sizes:["205/55R16","225/45R17"]},
+  {make:"Volkswagen",model:"Polo",  trim:"Base",  years:[2018,2019,2020,2021,2022,2023],sizes:["185/65R15","195/55R16"]},
+  {make:"Volkswagen",model:"Tiguan",trim:"Active",years:[2018,2019,2020,2021,2022,2023],sizes:["215/65R17","235/55R18"]},
+  {make:"Volkswagen",model:"Passat",trim:"Base",  years:[2018,2019,2020,2021,2022,2023],sizes:["205/55R16","215/55R17"]},
+  // Ford
+  {make:"Ford",model:"Focus", trim:"Base",  years:[2018,2019,2020,2021,2022,2023],sizes:["205/55R16","225/40R18"]},
+  {make:"Ford",model:"Fiesta",trim:"Base",  years:[2018,2019,2020,2021,2022],     sizes:["185/65R15","195/50R16"]},
+  {make:"Ford",model:"Kuga",  trim:"Active",years:[2019,2020,2021,2022,2023,2024],sizes:["215/65R16","235/50R19"]},
+  {make:"Ford",model:"Puma",  trim:"Active",years:[2020,2021,2022,2023,2024],     sizes:["195/65R15","205/45R17"]},
+  // BMW
+  {make:"BMW",model:"3 Series",trim:"Base", years:[2018,2019,2020,2021,2022,2023],sizes:["205/55R16","225/45R17"]},
+  {make:"BMW",model:"3 Series",trim:"Sport",years:[2019,2020,2021,2022,2023,2024],sizes:["225/45R17","225/40R18"]},
+  {make:"BMW",model:"5 Series",trim:"Base", years:[2018,2019,2020,2021,2022,2023],sizes:["225/55R17","245/45R18"]},
+  {make:"BMW",model:"X3",      trim:"xDrive",years:[2018,2019,2020,2021,2022,2023],sizes:["225/60R18","255/45R19"]},
+  // Mercedes-Benz
+  {make:"Mercedes-Benz",model:"C-Class",trim:"Base",years:[2018,2019,2020,2021,2022,2023],sizes:["205/55R16","225/45R17"]},
+  {make:"Mercedes-Benz",model:"A-Class",trim:"Base",years:[2018,2019,2020,2021,2022,2023],sizes:["195/65R15","225/40R18"]},
+  {make:"Mercedes-Benz",model:"GLC",    trim:"Base",years:[2018,2019,2020,2021,2022,2023],sizes:["235/55R19","255/45R20"]},
+  // Audi
+  {make:"Audi",model:"A3",trim:"Base",years:[2018,2019,2020,2021,2022,2023],sizes:["205/55R16","225/45R17"]},
+  {make:"Audi",model:"A4",trim:"Base",years:[2018,2019,2020,2021,2022,2023],sizes:["205/60R16","225/50R17"]},
+  {make:"Audi",model:"Q5",trim:"Base",years:[2018,2019,2020,2021,2022,2023],sizes:["235/55R18","255/45R19"]},
+  // Honda
+  {make:"Honda",model:"Civic",trim:"Base",  years:[2018,2019,2020,2021,2022,2023],sizes:["205/55R16","215/45R17"]},
+  {make:"Honda",model:"CR-V", trim:"Active",years:[2018,2019,2020,2021,2022,2023],sizes:["235/60R18","235/65R17"]},
+  {make:"Honda",model:"Jazz", trim:"Base",  years:[2018,2019,2020,2021,2022,2023],sizes:["175/65R15","185/55R16"]},
+  // Citroën
+  {make:"Citroën",model:"C3",         trim:"Feel",years:[2018,2019,2020,2021,2022,2023],sizes:["195/65R15","205/55R16"]},
+  {make:"Citroën",model:"C5 Aircross",trim:"Feel",years:[2019,2020,2021,2022,2023,2024],sizes:["215/60R17","225/55R18"]},
+  {make:"Citroën",model:"Berlingo",   trim:"Base",years:[2019,2020,2021,2022,2023],     sizes:["195/65R15","205/65R16C"]},
+  // Opel / Vauxhall
+  {make:"Opel",model:"Astra",trim:"Base",years:[2018,2019,2020,2021,2022,2023],sizes:["195/65R15","205/55R16"]},
+  {make:"Opel",model:"Corsa",trim:"Base",years:[2018,2019,2020,2021,2022,2023],sizes:["185/65R15","195/55R16"]},
+  {make:"Opel",model:"Mokka",trim:"Base",years:[2018,2019,2020,2021,2022,2023],sizes:["215/65R16","225/50R17"]},
+  // Seat
+  {make:"Seat",model:"Ibiza",trim:"Reference",years:[2018,2019,2020,2021,2022,2023],sizes:["185/65R15","195/55R16"]},
+  {make:"Seat",model:"Leon", trim:"Reference",years:[2018,2019,2020,2021,2022,2023],sizes:["205/55R16","225/45R17"]},
+  {make:"Seat",model:"Ateca",trim:"Reference",years:[2018,2019,2020,2021,2022,2023],sizes:["215/65R16","235/55R17"]},
+  // Skoda
+  {make:"Skoda",model:"Octavia",trim:"Active",years:[2018,2019,2020,2021,2022,2023],sizes:["205/55R16","215/55R17"]},
+  {make:"Skoda",model:"Fabia",  trim:"Active",years:[2018,2019,2020,2021,2022,2023],sizes:["185/65R15","195/55R16"]},
+  {make:"Skoda",model:"Karoq",  trim:"Active",years:[2018,2019,2020,2021,2022,2023],sizes:["215/60R17","235/55R17"]},
+  // Mitsubishi
+  {make:"Mitsubishi",model:"ASX",      trim:"Base",years:[2018,2019,2020,2021,2022,2023],sizes:["215/60R17","225/55R17"]},
+  {make:"Mitsubishi",model:"Outlander",trim:"Base",years:[2018,2019,2020,2021,2022,2023],sizes:["225/55R18","235/55R18"]},
+  // Mazda
+  {make:"Mazda",model:"Mazda3",trim:"Base",  years:[2018,2019,2020,2021,2022,2023],sizes:["205/60R16","215/45R18"]},
+  {make:"Mazda",model:"CX-5",  trim:"Active",years:[2018,2019,2020,2021,2022,2023],sizes:["225/65R17","235/55R19"]},
+  // Chery
+  {make:"Chery",model:"Tiggo 7", trim:"Base",years:[2020,2021,2022,2023,2024],sizes:["235/50R18","235/55R17"]},
+  {make:"Chery",model:"Tiggo 8", trim:"Base",years:[2020,2021,2022,2023,2024],sizes:["235/55R18","255/45R19"]},
+  {make:"Chery",model:"Arrizo 6",trim:"Base",years:[2020,2021,2022,2023,2024],sizes:["215/55R17","225/45R18"]},
+  // Fiat
+  {make:"Fiat",model:"Tipo", trim:"Base",years:[2018,2019,2020,2021,2022,2023],sizes:["195/65R15","205/55R16"]},
+  {make:"Fiat",model:"500",  trim:"Base",years:[2018,2019,2020,2021,2022,2023],sizes:["185/55R15","195/45R16"]},
+  {make:"Fiat",model:"Doblo",trim:"Base",years:[2018,2019,2020,2021,2022,2023],sizes:["195/65R15","195/70R15C"]},
+  // Nissan
+  {make:"Nissan",model:"Qashqai",trim:"Visia",years:[2018,2019,2020,2021,2022,2023],sizes:["215/60R17","215/65R17"]},
+  {make:"Nissan",model:"Juke",   trim:"Visia",years:[2018,2019,2020,2021,2022,2023],sizes:["215/55R17","225/45R18"]},
+  {make:"Nissan",model:"Micra",  trim:"Visia",years:[2018,2019,2020,2021,2022,2023],sizes:["185/65R15","195/50R16"]},
+  // Suzuki
+  {make:"Suzuki",model:"Swift", trim:"Base",years:[2018,2019,2020,2021,2022,2023],sizes:["175/65R15","195/55R16"]},
+  {make:"Suzuki",model:"Vitara",trim:"Base",years:[2018,2019,2020,2021,2022,2023],sizes:["215/55R17","215/65R16"]},
+  // Chevrolet
+  {make:"Chevrolet",model:"Cruze",      trim:"LS",years:[2018,2019,2020,2021,2022],     sizes:["205/60R16","215/55R17"]},
+  {make:"Chevrolet",model:"Trailblazer",trim:"LS",years:[2019,2020,2021,2022,2023,2024],sizes:["245/65R17","265/65R17"]}
+];
+
+/* ═══════════════ EU LABEL PLAIN-LANGUAGE TABLES ═══════════════ */
+const EU_GRADE_COLOR = { A:"#00D26A", B:"#84CC16", C:"#F59E0B", D:"#F97316", E:"#EF4444", F:"#DC2626", G:"#991B1B" };
+const EU_FUEL_PLAIN = { A:"Lowest running cost", B:"Low running cost", C:"Average running cost",
+  D:"Slightly higher fuel use", E:"Higher fuel consumption", F:"High fuel consumption", G:"Highest fuel consumption" };
+const EU_WET_PLAIN = { A:"Shortest wet stop", B:"Short wet stop", C:"Average wet braking",
+  D:"Slightly longer wet stop", E:"Longer wet stop", F:"Much longer wet stop", G:"Longest wet stop" };
+function noiseLabel(db){ return db < 70 ? "Quiet ride" : db <= 75 ? "Moderate" : "Loud"; }
+function seasonInfo(s){
+  if(s==="winter") return {cls:"season-winter",ico:"snowflake",txt:"Winter"};
+  if(s==="all")    return {cls:"season-all",   ico:"cloud-sun", txt:"All-Season"};
+  return {cls:"season-summer",ico:"sun",txt:"Summer"};
+}
+
+/* ═══════════════ HELPERS ═══════════════ */
+function parseSize(size){
+  // e.g. "205/55R16" -> {width:205, profile:55, rim:16}; "195/70R15C" -> 195/70/15(+C); "185R14C" -> 185/null/14
+  const m = size.match(/^(\d{3})(?:\/(\d{2,3}))?R(\d{2})/i);
+  if(!m) return null;
+  return { width:m[1], profile:m[2]||null, rim:m[3], commercial:/C$/i.test(size) };
+}
+function sizeSubtitle(size){
+  const p = parseSize(size);
+  if(!p) return "";
+  const parts = [p.width+" mm wide"];
+  if(p.profile) parts.push(p.profile+"% sidewall");
+  parts.push(p.rim+'-inch rim');
+  return parts.join(" · ") + (p.commercial ? " · Commercial (C)" : "");
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+// Safe JS argument for an inline (double-quoted) HTML attribute: JSON-encode then HTML-escape the quotes.
+function jsa(v){ return esc(JSON.stringify(v)); }
+function findTyresBySizes(sizes){
+  const set = new Set(sizes.map(s=>s.toUpperCase().replace(/\s/g,"")));
+  return TYRE_INVENTORY.filter(t => set.has(t.size.toUpperCase().replace(/\s/g,"")));
+}
+
+/* ═══════════════ TYRE CARD HTML ═══════════════ */
+function tyreCardHTML(t){
+  const prof = PROFILES[t.brand];
+  const dec  = decodeService(t.service);
+  const ssn  = seasonInfo(t.season);
+  const stockIn = t.stock === "in";
+  const fuel = prof.eu.fuel, wet = prof.eu.wet, noise = prof.eu.noise_db;
+  const dataAttr = `data-stock="${t.stock}" data-season="${t.season}" data-brand="${t.brand}"`;
+  return `
+  <div class="tyre-card" ${dataAttr}>
+    <div class="tc-row1">
+      <span class="chip brand-chip" style="background:${prof.color}">${esc(t.brand)}</span>
+      <span class="chip seg-chip">${esc(prof.segment)}</span>
+      <span class="chip season-chip ${ssn.cls}"><i data-lucide="${ssn.ico}"></i>${ssn.txt}</span>
+      <span class="stock-badge ${stockIn?'stock-in':'stock-order'}">
+        <i data-lucide="${stockIn?'check-circle':'clock'}"></i>${stockIn?'In Stock':'Order 3-5 days'}
+      </span>
+    </div>
+    <div>
+      <div class="tc-size mono">${esc(t.size)}${t.xl?'<span class="xl-tag">XL</span>':''}</div>
+      <div class="tc-size-sub">${sizeSubtitle(t.size)}</div>
+    </div>
+    <div class="tc-tagline">${esc(prof.tagline)}</div>
+    <div>
+      <div class="eu-disc">EU Performance Label (demo values — your real ratings go here)</div>
+      <div class="eu-badges">
+        <div class="eu-badge">
+          <div class="eu-top"><i data-lucide="fuel" class="eu-ico"></i>
+            <span class="eu-grade" style="background:${EU_GRADE_COLOR[fuel]}">${fuel}</span>
+            <span class="eu-name">Fuel</span></div>
+          <div class="eu-plain">${EU_FUEL_PLAIN[fuel]}</div>
+        </div>
+        <div class="eu-badge">
+          <div class="eu-top"><i data-lucide="droplets" class="eu-ico"></i>
+            <span class="eu-grade" style="background:${EU_GRADE_COLOR[wet]}">${wet}</span>
+            <span class="eu-name">Wet grip</span></div>
+          <div class="eu-plain">${EU_WET_PLAIN[wet]}</div>
+        </div>
+        <div class="eu-badge">
+          <div class="eu-top"><i data-lucide="volume-2" class="eu-ico"></i>
+            <span class="eu-grade" style="background:#0D1117;color:#22D3EE;border:1px solid #2D3748;width:auto;padding:0 6px;font-size:.72rem">${noise} dB</span></div>
+          <div class="eu-plain">${noiseLabel(noise)}</div>
+        </div>
+      </div>
+    </div>
+    <div class="tc-specs">
+      <span class="spec-chip"><i data-lucide="weight"></i>Carries ${dec.load_kg} kg / tyre</span>
+      <span class="spec-chip"><i data-lucide="gauge"></i>Rated ${dec.speed_kmh} km/h</span>
+      ${t.xl?'<span class="spec-chip xl-chip"><i data-lucide="shield"></i>Extra Load — reinforced</span>':''}
+    </div>
+    <div class="gf-block">
+      <div class="gf-line"><span class="gf-head gf-good">✓ Best for:</span>
+        ${prof.best_for.map(b=>`<span class="gchip">${esc(b)}</span>`).join("")}</div>
+      <div class="gf-line"><span class="gf-head gf-bad">✕ Not ideal for:</span>
+        ${prof.not_ideal.map(b=>`<span class="bchip">${esc(b)}</span>`).join("")}</div>
+    </div>
+    <div class="tc-footer">
+      <button class="reserve-btn" onclick="openReserve(${jsa(t.size)},${jsa(t.brand)})">
+        <i data-lucide="bookmark"></i>Reserve This Tyre</button>
+    </div>
+  </div>`;
+}
+
+/* ═══════════════ RENDER A RESULT SET (with filter bar) ═══════════════ */
+function renderResultSet(containerId, tyres, opts){
+  opts = opts || {};
+  const el = document.getElementById(containerId);
+  if(!tyres.length){
+    el.innerHTML = `<div class="empty-note">No matching tyres in stock for that size in this demo inventory. Try another size or the Popular Vehicles tab.</div>`;
+    lucide.createIcons();
+    return;
+  }
+  // record brands/seasons present for dynamic filters
+  const brands = [...new Set(tyres.map(t=>t.brand))];
+  const seasons = [...new Set(tyres.map(t=>t.season))];
+  let filters = `<button class="fbtn active" data-f="all" onclick="applyFilter('${containerId}',this,'all')">All</button>
+    <button class="fbtn" data-f="instock" onclick="applyFilter('${containerId}',this,'instock')">In Stock Only</button>`;
+  seasons.forEach(s=>{ const i=seasonInfo(s); filters+=`<button class="fbtn" data-f="season:${s}" onclick="applyFilter('${containerId}',this,'season:${s}')">${i.txt}</button>`; });
+  if(brands.length>1) brands.forEach(b=>{ filters+=`<button class="fbtn" data-f="brand:${b}" onclick="applyFilter('${containerId}',this,'brand:${b}')">${esc(b)}</button>`; });
+
+  el.innerHTML =
+    (opts.headHTML||"") +
+    `<div class="filter-bar">${filters}</div>` +
+    `<div class="cards-grid" id="${containerId}-grid">${tyres.map(tyreCardHTML).join("")}</div>` +
+    (opts.footHTML||"");
+  lucide.createIcons();
+}
+function applyFilter(containerId, btn, f){
+  const bar = btn.parentElement;
+  bar.querySelectorAll(".fbtn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  const cards = document.querySelectorAll(`#${containerId}-grid .tyre-card`);
+  cards.forEach(c=>{
+    let show=true;
+    if(f==="instock") show = c.dataset.stock==="in";
+    else if(f.startsWith("season:")) show = c.dataset.season===f.split(":")[1];
+    else if(f.startsWith("brand:"))  show = c.dataset.brand===f.split(":")[1];
+    c.style.display = show ? "" : "none";
+  });
+}
+
+/* ═══════════════ STATE ═══════════════ */
+window.activeTab = 'vehicle';
+window.lastSearch = null;       // {label, sizes}
+window.lastExpandedTyre = null; // a tyre obj
+window.manualSize = null;
+window.chatHasOpened = false;
+let sel = { make:null, model:null, year:null, trim:null };
+
+/* ═══════════════ TAB SWITCHING ═══════════════ */
+function switchTab(tab){
+  window.activeTab = tab;
+  document.querySelectorAll('.tab-panel').forEach(p=>{p.classList.add('hidden');p.classList.remove('active');});
+  document.querySelectorAll('.stab').forEach(s=>s.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.remove('hidden');
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('t-'+tab).classList.add('active');
+  if(tab==='global' && !window.explorerReady){ buildExplorer(); }
+  updateChatContext();
+  updateQuickPrompts();
+}
+
+/* ═══════════════ TAB 1 — VEHICLE SELECTOR ═══════════════ */
+const MAKES = [...new Set(VEHICLE_DB.map(v=>v.make))];
+function renderTracker(){
+  const stages = [
+    {k:'make', l:'Make'},
+    {k:'model',l:'Model'},
+    {k:'year', l:'Year'},
+    {k:'results',l:'Results'}
+  ];
+  let cur = 'make';
+  if(sel.make) cur='model';
+  if(sel.model) cur='year';
+  if(sel.year) cur='results';
+  const order = ['make','model','year','results'];
+  let html='';
+  stages.forEach((s,i)=>{
+    let cls='';
+    if(order.indexOf(s.k) < order.indexOf(cur)) cls='done';
+    else if(s.k===cur) cls='active';
+    html += `<div class="tk-step ${cls}"><div class="tk-circle">${cls==='done'?'<i data-lucide=check style="width:16px;height:16px"></i>':(i+1)}</div><span class="tk-label">${s.l}</span></div>`;
+    if(i<stages.length-1) html += `<div class="tk-line"></div>`;
+  });
+  document.getElementById('tracker').innerHTML = html;
+}
+function renderSelector(){
+  let html = '';
+  // STEP 1 — MAKE
+  html += `<div class="step-block"><div class="step-head">Step 1 · Select Make</div><div class="opt-grid grid-make">`;
+  MAKES.forEach(mk=>{
+    const s = sel.make===mk ? 'sel' : '';
+    html += `<button class="opt-btn ${s}" onclick="pickMake(${jsa(mk)})">
+      <span class="opt-ico">${esc(mk[0])}</span><span>${esc(mk)}</span>
+      <span class="opt-check"><i data-lucide="check"></i></span></button>`;
+  });
+  html += `</div></div>`;
+  // STEP 2 — MODEL
+  if(sel.make){
+    const models = [...new Set(VEHICLE_DB.filter(v=>v.make===sel.make).map(v=>v.model))];
+    html += `<div class="step-block"><div class="step-head">Step 2 · Select Model</div><div class="opt-grid grid-model">`;
+    models.forEach(md=>{
+      const s = sel.model===md ? 'sel' : '';
+      html += `<button class="opt-btn ${s}" onclick="pickModel(${jsa(md)})">
+        <span>${esc(md)}</span><span class="opt-check"><i data-lucide="check"></i></span></button>`;
+    });
+    html += `</div></div>`;
+  }
+  // STEP 3 — YEAR
+  if(sel.model){
+    const yset = new Set();
+    VEHICLE_DB.filter(v=>v.make===sel.make && v.model===sel.model).forEach(v=>v.years.forEach(y=>yset.add(y)));
+    const years = [...yset].sort((a,b)=>b-a);
+    html += `<div class="step-block"><div class="step-head">Step 3 · Select Year</div><div class="opt-grid grid-year">`;
+    years.forEach(y=>{
+      const s = sel.year===y ? 'sel' : '';
+      html += `<button class="opt-btn year-btn ${s}" onclick="pickYear(${y})">${y}</button>`;
+    });
+    html += `</div></div>`;
+  }
+  // STEP 4 — TRIM (only if >1 trim)
+  if(sel.year){
+    const entries = VEHICLE_DB.filter(v=>v.make===sel.make && v.model===sel.model && v.years.includes(sel.year));
+    const trims = [...new Set(entries.map(v=>v.trim))];
+    if(trims.length>1){
+      html += `<div class="step-block"><div class="step-head">Step 4 · Select Trim</div><div class="opt-grid grid-trim">`;
+      trims.forEach(tr=>{
+        const s = sel.trim===tr ? 'sel' : '';
+        html += `<button class="opt-btn trim-btn ${s}" onclick="pickTrim(${jsa(tr)})">${esc(tr)}</button>`;
+      });
+      html += `</div></div>`;
+    }
+  }
+  document.getElementById('selectorSteps').innerHTML = html;
+  lucide.createIcons();
+}
+function pickMake(mk){ sel.make=mk; sel.model=null; sel.year=null; sel.trim=null; clearResults(); renderTracker(); renderSelector(); }
+function pickModel(md){ sel.model=md; sel.year=null; sel.trim=null; clearResults(); renderTracker(); renderSelector(); }
+function pickYear(y){
+  sel.year=y; sel.trim=null; clearResults(); renderTracker(); renderSelector();
+  const entries = VEHICLE_DB.filter(v=>v.make===sel.make && v.model===sel.model && v.years.includes(sel.year));
+  const trims = [...new Set(entries.map(v=>v.trim))];
+  if(trims.length<=1){ sel.trim = trims[0]; showVehicleResults(); }
+}
+function pickTrim(tr){ sel.trim=tr; renderSelector(); showVehicleResults(); }
+function clearResults(){ document.getElementById('vehicleResults').innerHTML=''; }
+
+function showVehicleResults(){
+  const entry = VEHICLE_DB.find(v=>v.make===sel.make && v.model===sel.model && v.trim===sel.trim && v.years.includes(sel.year));
+  if(!entry){ return; }
+  const sizes = entry.sizes;
+  const label = `${sel.year} ${sel.make} ${sel.model}${sel.trim && sel.trim!=='Base'?' '+sel.trim:''}`;
+  const tyres = findTyresBySizes(sizes);
+  window.lastSearch = { label, sizes };
+  window.lastExpandedTyre = null;
+
+  const headHTML = `
+    <div class="results-head"><div class="veh-summary">Showing tyres for ${esc(label)}</div></div>
+    <div class="oem-row"><span class="oem-lbl">OEM sizes found:</span>
+      ${sizes.map(s=>`<span class="oem-chip">${esc(s)}</span>`).join("")}</div>`;
+  const footHTML = `<button class="ghost-btn" onclick="startOver()"><i data-lucide="rotate-ccw"></i>Start over</button>`;
+  renderResultSet('vehicleResults', tyres, {headHTML, footHTML});
+  // mark results stage done
+  renderTracker();
+  document.getElementById('vehicleResults').scrollIntoView({behavior:'smooth',block:'nearest'});
+  onResultsReady(label, tyres.length);
+}
+function startOver(){ sel={make:null,model:null,year:null,trim:null}; window.lastSearch=null; clearResults(); renderTracker(); renderSelector(); updateChatContext(); updateQuickPrompts(); }
+
+/* ═══════════════ TAB 2 — NATIVE SIZE EXPLORER ═══════════════ */
+// Build a parsed index of every inventory size: {width, profile(''=none), rim}
+const SIZE_INDEX = TYRE_INVENTORY.map(t=>{
+  const p = parseSize(t.size);
+  return p ? { size:t.size, width:p.width, profile:p.profile||'', rim:p.rim } : null;
+}).filter(Boolean);
+
+function uniqSorted(arr){ return [...new Set(arr)].sort((a,b)=>(+a)-(+b)); }
+function fillSelect(el, values, anyLabel, fmt){
+  el.innerHTML = `<option value="">${anyLabel}</option>` +
+    values.map(v=>`<option value="${v}">${fmt?fmt(v):v}</option>`).join("");
+}
+function buildExplorer(){
+  window.explorerReady = true;
+  const w=document.getElementById('exWidth'), pr=document.getElementById('exProfile'), r=document.getElementById('exRim');
+  fillSelect(w, uniqSorted(SIZE_INDEX.map(s=>s.width)), 'Any width', v=>v+' mm');
+  refreshProfile(); refreshRim();
+  w.addEventListener('change', ()=>{ refreshProfile(); refreshRim(); runExplorer(); });
+  pr.addEventListener('change', ()=>{ refreshRim(); runExplorer(); });
+  r.addEventListener('change', runExplorer);
+  runExplorer();
+}
+function refreshProfile(){
+  const w=document.getElementById('exWidth').value;
+  const pr=document.getElementById('exProfile');
+  const prev=pr.value;
+  let rows = SIZE_INDEX; if(w) rows=rows.filter(s=>s.width===w);
+  const profs = uniqSorted(rows.map(s=>s.profile).filter(p=>p!==''));
+  const hasCommercial = rows.some(s=>s.profile==='');
+  let html = `<option value="">Any profile</option>` + profs.map(p=>`<option value="${p}">${p}%</option>`).join("");
+  if(hasCommercial) html += `<option value="__none">Full profile (C)</option>`;
+  pr.innerHTML = html;
+  if([...pr.options].some(o=>o.value===prev)) pr.value=prev;
+}
+function refreshRim(){
+  const w=document.getElementById('exWidth').value;
+  let prv=document.getElementById('exProfile').value;
+  const r=document.getElementById('exRim'); const prev=r.value;
+  let rows = SIZE_INDEX;
+  if(w) rows=rows.filter(s=>s.width===w);
+  if(prv==='__none') rows=rows.filter(s=>s.profile==='');
+  else if(prv) rows=rows.filter(s=>s.profile===prv);
+  fillSelect(r, uniqSorted(rows.map(s=>s.rim)), 'Any rim', v=>'R'+v);
+  if([...r.options].some(o=>o.value===prev)) r.value=prev;
+}
+function runExplorer(){
+  const w=document.getElementById('exWidth').value;
+  const prv=document.getElementById('exProfile').value;
+  const rim=document.getElementById('exRim').value;
+  let rows = SIZE_INDEX;
+  if(w) rows=rows.filter(s=>s.width===w);
+  if(prv==='__none') rows=rows.filter(s=>s.profile==='');
+  else if(prv) rows=rows.filter(s=>s.profile===prv);
+  if(rim) rows=rows.filter(s=>s.rim===rim);
+  const sizes=[...new Set(rows.map(s=>s.size))];
+  const tyres=findTyresBySizes(sizes);
+  // Build a readable label of the active filter
+  const parts=[]; if(w)parts.push(w); if(prv&&prv!=='__none')parts.push('/'+prv); if(rim)parts.push('R'+rim);
+  const lbl = parts.length ? 'size filter '+parts.join('') : 'full range';
+  window.lastSearch = { label:'Browse — '+(parts.length?parts.join(''):'all sizes'), sizes };
+  window.manualSize = parts.length ? parts.join('') : null;
+  const head = `<div class="results-head"><div class="veh-summary">${tyres.length} tyre${tyres.length!==1?'s':''} ${parts.length?'matching '+esc(parts.join('')):'in stock'}</div></div>`;
+  renderResultSet('globalResults', tyres, {headHTML:head});
+  updateChatContext();
+  if(tyres.length) onResultsReady(lbl, tyres.length);
+}
+function checkGlobalStock(){
+  const v = document.getElementById('globalSizeInput').value.trim();
+  if(!v) return;
+  window.manualSize = v;
+  const tyres = findTyresBySizes([v]);
+  window.lastSearch = { label:'size '+v, sizes:[v] };
+  renderResultSet('globalResults', tyres, {headHTML:`<div class="oem-row"><span class="oem-lbl">Showing stock for</span><span class="oem-chip">${esc(v)}</span></div>`});
+  updateChatContext();
+  onResultsReady('size '+v, tyres.length);
+}
+
+/* ═══════════════ TAB 3 — MANUAL ENTRY ═══════════════ */
+function searchManual(){
+  const v = document.getElementById('manualSizeInput').value.trim();
+  if(!v) return;
+  window.manualSize = v;
+  const tyres = findTyresBySizes([v]);
+  window.lastSearch = { label:'size '+v, sizes:[v] };
+  renderResultSet('manualResults', tyres, {headHTML:`<div class="oem-row"><span class="oem-lbl">Showing stock for</span><span class="oem-chip">${esc(v)}</span></div>`});
+  updateChatContext();
+  onResultsReady('size '+v, tyres.length);
+}
+
+/* ═══════════════ CHATBOT ═══════════════ */
+const QUICK_PROMPTS = {
+  no_results: ["What tyre fits my car?","What does XL mean?","What is an EU label?"],
+  has_results:["Which size is better?","What does XL mean?","What's the load rating?","Best for motorways?"],
+  has_tyre:   ["Is this good for rain?","What's the fuel saving?","How long will it last?","Compare with others"]
+};
+let chatStarted = false;
+function buildContext(){
+  const ctx = { tab: window.activeTab || 'vehicle' };
+  if(window.lastSearch){ ctx.vehicle = window.lastSearch.label; ctx.oem_sizes = window.lastSearch.sizes; }
+  if(window.lastExpandedTyre){
+    const t = window.lastExpandedTyre; const prof = PROFILES[t.brand]; const dec = decodeService(t.service);
+    ctx.viewing_tyre = {
+      size:t.size, brand:t.brand, segment:prof.segment, tagline:prof.tagline,
+      eu_fuel:prof.eu.fuel, eu_wet:prof.eu.wet, eu_noise:prof.eu.noise_db,
+      best_for:prof.best_for.join(', '), not_ideal:prof.not_ideal.join(', '),
+      load_kg:dec.load_kg, speed_kmh:dec.speed_kmh, stock:t.stock
+    };
+  }
+  if(window.activeTab==='manual' && window.manualSize){ ctx.manual_size = window.manualSize; }
+  return ctx;
+}
+function updateChatContext(){
+  const el = document.getElementById('chatCtx');
+  let txt = 'No vehicle selected yet';
+  if(window.lastSearch) txt = window.lastSearch.label;
+  el.innerHTML = `<i data-lucide="car"></i><span><b>${esc(txt)}</b></span>`;
+  lucide.createIcons();
+}
+function updateQuickPrompts(){
+  let state = 'no_results';
+  if(window.lastExpandedTyre) state='has_tyre';
+  else if(window.lastSearch) state='has_results';
+  const qp = document.getElementById('quickPrompts');
+  qp.innerHTML = QUICK_PROMPTS[state].map(p=>`<button class="qp" onclick="quickAsk(${jsa(p)})">${esc(p)}</button>`).join("");
+}
+function quickAsk(t){ document.getElementById('chatInput').value=t; sendFromInput(); }
+function toggleChat(){
+  const panel=document.getElementById('chatPanel'), trig=document.getElementById('chatTrigger');
+  const open = panel.classList.toggle('open');
+  trig.classList.toggle('open', open);
+  if(open){
+    document.getElementById('chatNotif').classList.remove('show');
+    if(!chatStarted){ startChat(); }
+    updateChatContext(); updateQuickPrompts();
+  }
+}
+function openChat(){ if(!document.getElementById('chatPanel').classList.contains('open')) toggleChat(); }
+function startChat(){
+  chatStarted = true;
+  appendBotMessage("Hello — I am your Tyre Advisor. I can help you choose between sizes, explain what any spec means in plain English, or answer questions about load ratings, wet grip, and fuel efficiency. What would you like to know?");
+}
+function resetChat(){
+  document.getElementById('chatBody').innerHTML='';
+  chatStarted=false; startChat(); updateQuickPrompts();
+}
+function appendBotMessage(text){
+  const b=document.getElementById('chatBody');
+  const d=document.createElement('div'); d.className='msg bot'; d.textContent=text;
+  b.appendChild(d); b.scrollTop=b.scrollHeight;
+}
+function appendUserMessage(text){
+  const b=document.getElementById('chatBody');
+  const d=document.createElement('div'); d.className='msg user'; d.textContent=text;
+  b.appendChild(d); b.scrollTop=b.scrollHeight;
+}
+function showTyping(){
+  const b=document.getElementById('chatBody');
+  const d=document.createElement('div'); d.className='typing'; d.id='typingDots';
+  d.innerHTML='<span></span><span></span><span></span>'; b.appendChild(d); b.scrollTop=b.scrollHeight;
+}
+function hideTyping(){ const t=document.getElementById('typingDots'); if(t) t.remove(); }
+function showChatError(msg){ const e=document.getElementById('chatErr'); e.textContent=msg; e.classList.add('show'); setTimeout(()=>e.classList.remove('show'),5000); }
+function sendFromInput(){
+  const inp=document.getElementById('chatInput'); const v=inp.value.trim();
+  if(!v) return; inp.value=''; inp.style.height='auto';
+  appendUserMessage(v); sendChat(v);
+}
+async function sendChat(userMessage){
+  const payload = { message:userMessage, context:JSON.stringify(buildContext()), product:"retail-showroom" };
+  try{
+    showTyping();
+    const res = await fetch(N8N_CHATBOT_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload) });
+    const data = await res.json();
+    hideTyping();
+    appendBotMessage(data.reply || "Sorry, I could not process that.");
+  }catch(e){
+    hideTyping();
+    showChatError("Connection error — please try again.");
+  }
+}
+// Auto-activation — fires once per session, 1.5s after first results
+function onResultsReady(searchLabel, tyreCount){
+  window.lastResultCount = tyreCount;
+  document.getElementById('chatNotif').classList.add('show');
+  document.getElementById('chatPulse').classList.add('show');
+  updateChatContext(); updateQuickPrompts();
+  if(!window.chatHasOpened && !window.chatAutoScheduled){
+    window.chatAutoScheduled = true;   // guard against stacked timers on rapid re-renders
+    setTimeout(()=>{
+      window.chatHasOpened = true;
+      // use the latest search at fire time, not the stale closure value
+      const ls = window.lastSearch || {label:searchLabel, sizes:[]};
+      const n = window.lastResultCount != null ? window.lastResultCount : tyreCount;
+      if(!document.getElementById('chatPanel').classList.contains('open')){
+        openChat();
+        appendBotMessage("I found "+n+" "+(n===1?'tyre':'tyres')+" for your "+ls.label+". Would you like help choosing between them, or do you have a question about size, load rating, or what any tyre is best for?");
+      }
+    },1500);
+  }
+}
+
+/* ═══════════════ LEAD CAPTURE MODAL ═══════════════ */
+function openReserve(size, brand){
+  // record the viewed tyre for chatbot context
+  const t = TYRE_INVENTORY.find(x=>x.size===size && x.brand===brand);
+  if(t){ window.lastExpandedTyre = t; updateChatContext(); updateQuickPrompts(); }
+  const seg = PROFILES[brand] ? PROFILES[brand].segment.split('•')[0].trim() : '';
+  document.getElementById('leadTyre').value = `${size} — ${brand}${seg?' '+seg:''}`;
+  document.getElementById('leadName').value=''; document.getElementById('leadPhone').value='';
+  document.getElementById('reserveForm').style.display='block';
+  document.getElementById('reserveResult').style.display='none';
+  ['f-name','f-phone','f-tyre'].forEach(id=>document.getElementById(id).classList.remove('err'));
+  document.getElementById('reserveModal').classList.add('open');
+  document.getElementById('leadName').dataset.size = size;
+  document.getElementById('leadName').dataset.brand = brand;
+}
+function closeReserve(){ document.getElementById('reserveModal').classList.remove('open'); }
+async function submitLead(){
+  const name=document.getElementById('leadName').value.trim();
+  const phone=document.getElementById('leadPhone').value.trim();
+  const tyre=document.getElementById('leadTyre').value.trim();
+  let ok=true;
+  const setErr=(id,bad)=>document.getElementById(id).classList.toggle('err',bad);
+  setErr('f-name', !name); if(!name) ok=false;
+  const digits=(phone.match(/\d/g)||[]).length;
+  setErr('f-phone', digits<8); if(digits<8) ok=false;
+  setErr('f-tyre', !tyre); if(!tyre) ok=false;
+  if(!ok) return;
+  const btn=document.getElementById('leadSubmit'); btn.disabled=true; btn.textContent='Sending…';
+  const payload = {
+    name, phone, tyre_size:tyre,
+    tyre_brand:document.getElementById('leadName').dataset.brand||'',
+    vehicle: window.lastSearch ? window.lastSearch.label : '',
+    timestamp:new Date().toISOString(), source:'TyreDesk Demo'
+  };
+  try{
+    await fetch(N8N_LEAD_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload) });
+    showReserveResult(true);
+  }catch(e){
+    showReserveResult(false);
+  }finally{ btn.disabled=false; btn.textContent='Reserve Now'; }
+}
+function showReserveResult(success){
+  document.getElementById('reserveForm').style.display='none';
+  const r=document.getElementById('reserveResult'); r.style.display='block';
+  if(success){
+    r.className='modal-result';
+    r.innerHTML=`<div class="rok"><i data-lucide="check"></i></div><p>Request received — we will contact you within 2 hours.</p>`;
+    lucide.createIcons();
+    setTimeout(closeReserve,4000);
+  }else{
+    r.className='modal-result err';
+    r.innerHTML=`<div class="rok"><i data-lucide="alert-triangle"></i></div><p>Please call us directly or try again.</p>`;
+    lucide.createIcons();
+  }
+}
+
+/* ═══════════════ INIT ═══════════════ */
+document.addEventListener('DOMContentLoaded', ()=>{
+  renderTracker(); renderSelector();
+  updateChatContext(); updateQuickPrompts();
+  // textarea auto-grow + Enter to send
+  const ci=document.getElementById('chatInput');
+  ci.addEventListener('input',()=>{ ci.style.height='auto'; ci.style.height=Math.min(ci.scrollHeight,90)+'px'; });
+  ci.addEventListener('keydown',e=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendFromInput(); } });
+  // Enter in size inputs
+  document.getElementById('manualSizeInput').addEventListener('keydown',e=>{ if(e.key==='Enter') searchManual(); });
+  document.getElementById('globalSizeInput').addEventListener('keydown',e=>{ if(e.key==='Enter') checkGlobalStock(); });
+  // close modal on overlay click
+  document.getElementById('reserveModal').addEventListener('click',e=>{ if(e.target.id==='reserveModal') closeReserve(); });
+  lucide.createIcons();
+});
+</script>
+</body>
+</html>

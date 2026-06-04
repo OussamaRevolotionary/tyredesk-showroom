@@ -1,0 +1,83 @@
+{
+  "name": "TyreDesk — A — Chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tyredesk-chatbot",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "a1111111-1111-4111-8111-111111111111",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-40, 300],
+      "webhookId": "tyredesk-chatbot"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b2222222-2222-4222-8222-222222222222",
+              "name": "system_prompt",
+              "type": "string",
+              "value": "=You are a tyre advisor for a retail tyre shop. You help customers choose between tyre sizes, explain specs in plain English, and answer questions about rolling resistance (fuel efficiency), wet grip, noise, load capacity, speed ratings, and XL tyres. You speak simply — no jargon. Translate every technical term. Current context: {{ $json.body.context }} If the customer is comparing sizes: explain the practical difference. If they ask about EU labels: explain what each grade means for their daily driving. Never recommend a specific brand over another — all brands in the demo are equivalent quality. If they want to reserve a tyre, tell them to click the Reserve button on the result card."
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "c3333333-3333-4333-8333-333333333333",
+      "name": "Set System Prompt",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'gpt-4o-mini', temperature: 0.45, max_tokens: 400, messages: [ { role: 'system', content: $json.system_prompt }, { role: 'user', content: $('Webhook').item.json.body.message } ] }) }}",
+        "options": {}
+      },
+      "id": "d4444444-4444-4444-8444-444444444444",
+      "name": "OpenAI Chat (gpt-4o-mini)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "REPLACE_WITH_YOUR_OPENAI_CREDENTIAL_ID",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"reply\": $json.choices[0].message.content } }}",
+        "options": {}
+      },
+      "id": "e5555555-5555-4555-8555-555555555555",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [700, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": { "main": [[{ "node": "Set System Prompt", "type": "main", "index": 0 }]] },
+    "Set System Prompt": { "main": [[{ "node": "OpenAI Chat (gpt-4o-mini)", "type": "main", "index": 0 }]] },
+    "OpenAI Chat (gpt-4o-mini)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "pinData": {},
+  "meta": { "templatecredsSetupCompleted": false }
+}
