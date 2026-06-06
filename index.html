@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TyreDesk — Retail Tyre Showroom</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
 /* ===== BASE ===== */
@@ -31,6 +31,10 @@ a{color:inherit}
 .stab.active{color:#F97316;background:rgba(249,115,22,.12);border-color:rgba(249,115,22,.4)}
 .nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}
 .badge-demo{font-size:.66rem;font-weight:800;letter-spacing:1px;color:#F59E0B;border:1px solid rgba(245,158,11,.5);padding:4px 9px;border-radius:6px;background:rgba(245,158,11,.08)}
+.lang-toggle{display:flex;gap:2px;background:#0D1117;border:1px solid #2D3748;border-radius:8px;padding:2px}
+.lang-btn{background:transparent;border:none;color:#94A3B8;font-family:inherit;font-size:.74rem;font-weight:700;padding:5px 9px;border-radius:6px;cursor:pointer;transition:.15s;white-space:nowrap}
+.lang-btn:hover{color:#E2E8F0}
+.lang-btn.active{background:#F97316;color:#0D1117}
 
 /* ===== HERO STATS ===== */
 .hero-bar{display:flex;border-bottom:1px solid #2D3748;overflow-x:auto;scrollbar-width:none}
@@ -248,6 +252,30 @@ a{color:inherit}
   #chatTrigger{right:16px;bottom:16px}
   .chat-pulse{right:16px;bottom:16px}
 }
+
+/* ===== ARABIC / RTL ===== */
+[dir=rtl] body,[dir=rtl] button,[dir=rtl] input,[dir=rtl] textarea,[dir=rtl] select,[dir=rtl] .brand-name{font-family:'Tajawal','Inter',system-ui,sans-serif}
+[dir=rtl] .mono,[dir=rtl] .tc-size,[dir=rtl] .tc-size-sub,[dir=rtl] .spec-chip,[dir=rtl] .oem-chip{direction:ltr;unicode-bidi:isolate}
+[dir=rtl] .tc-size,[dir=rtl] .oem-chip{text-align:right}
+[dir=rtl] .nav-right{margin-left:0;margin-right:auto}
+[dir=rtl] .search-tabs{margin-left:0;margin-right:8px}
+[dir=rtl] .hero-stat{border-right:none;border-left:1px solid #2D3748}
+[dir=rtl] .intro-card{border-left:none;border-right:4px solid #F97316}
+[dir=rtl] .stock-badge{margin-left:0;margin-right:auto}
+[dir=rtl] .opt-btn{text-align:right}
+[dir=rtl] .opt-check{right:auto;left:10px}
+[dir=rtl] .ex-select{background-position:left 14px center;padding:12px 14px 12px 34px}
+[dir=rtl] .modal-close{right:auto;left:16px}
+[dir=rtl] .chat-head-actions{margin-left:0;margin-right:auto}
+[dir=rtl] #chatPanel{right:auto;left:24px}
+[dir=rtl] #chatTrigger,[dir=rtl] .chat-pulse{right:auto;left:24px}
+[dir=rtl] #chatNotif{right:auto;left:22px}
+[dir=rtl] .msg.bot{align-self:flex-end;border-bottom-left-radius:13px;border-bottom-right-radius:4px}
+[dir=rtl] .msg.user{align-self:flex-start;border-bottom-right-radius:13px;border-bottom-left-radius:4px}
+@media(max-width:430px){
+  [dir=rtl] #chatPanel{left:12px;right:12px}
+  [dir=rtl] #chatTrigger,[dir=rtl] .chat-pulse{left:16px;right:auto}
+}
 </style>
 </head>
 <body>
@@ -259,19 +287,26 @@ a{color:inherit}
     <div class="brand-name">TyreDesk<span class="brand-dot">.</span>pro</div>
   </div>
   <nav class="search-tabs">
-    <button class="stab active" onclick="switchTab('vehicle')" id="t-vehicle"><i data-lucide="car"></i><span>Popular Vehicles</span></button>
-    <button class="stab" onclick="switchTab('global')" id="t-global"><i data-lucide="globe"></i><span>Any Vehicle Worldwide</span></button>
-    <button class="stab" onclick="switchTab('manual')" id="t-manual"><i data-lucide="keyboard"></i><span>Enter Size</span></button>
+    <button class="stab active" onclick="switchTab('vehicle')" id="t-vehicle"><i data-lucide="car"></i><span data-i18n="tab_vehicle">Popular Vehicles</span></button>
+    <button class="stab" onclick="switchTab('global')" id="t-global"><i data-lucide="ruler"></i><span data-i18n="tab_global">Search by Size</span></button>
+    <button class="stab" onclick="switchTab('manual')" id="t-manual"><i data-lucide="keyboard"></i><span data-i18n="tab_manual">Enter Size</span></button>
   </nav>
-  <div class="nav-right"><span class="badge-demo">DEMO</span></div>
+  <div class="nav-right">
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="lang-fr" onclick="setLang('fr')">FR</button>
+      <button class="lang-btn" id="lang-ar" onclick="setLang('ar')">العربية</button>
+    </div>
+    <span class="badge-demo">DEMO</span>
+  </div>
 </header>
 
 <!-- ████ HERO STATS ████ -->
 <div class="hero-bar">
-  <div class="hero-stat"><div class="stat-n">95</div><div class="stat-l">Tyres In Stock</div></div>
-  <div class="hero-stat"><div class="stat-n">25</div><div class="stat-l">Vehicle Makes</div></div>
-  <div class="hero-stat"><div class="stat-n">250+</div><div class="stat-l">Fitments Covered</div></div>
-  <div class="hero-stat"><div class="stat-n">5</div><div class="stat-l">Tyre Lines · Browse by Size</div></div>
+  <div class="hero-stat"><div class="stat-n">95</div><div class="stat-l" data-i18n="hero_stock">Tyres In Stock</div></div>
+  <div class="hero-stat"><div class="stat-n">25</div><div class="stat-l" data-i18n="hero_makes">Vehicle Makes</div></div>
+  <div class="hero-stat"><div class="stat-n">250+</div><div class="stat-l" data-i18n="hero_fitments">Fitments Covered</div></div>
+  <div class="hero-stat"><div class="stat-n">5</div><div class="stat-l" data-i18n="hero_lines">Tyre Lines · Browse by Size</div></div>
 </div>
 
 <!-- ████ MAIN ████ -->
@@ -280,12 +315,12 @@ a{color:inherit}
   <!-- TAB 1: POPULAR VEHICLES -->
   <div id="tab-vehicle" class="tab-panel active">
     <div class="intro-card">
-      <h1>Find Your Perfect Tyre</h1>
-      <p>Select your vehicle — we show compatible tyres instantly.</p>
+      <h1 data-i18n="v_title">Find Your Perfect Tyre</h1>
+      <p data-i18n="v_sub">Select your vehicle — we show compatible tyres instantly.</p>
       <div class="pill-row">
-        <span class="pill">25 Makes Covered</span>
-        <span class="pill">EU Labels Included</span>
-        <span class="pill">Plain English Specs</span>
+        <span class="pill" data-i18n="pill_makes">25 Makes Covered</span>
+        <span class="pill" data-i18n="pill_eu">EU Labels Included</span>
+        <span class="pill" data-i18n="pill_plain">Plain Language Specs</span>
       </div>
     </div>
     <div class="tracker" id="tracker"></div>
@@ -296,34 +331,34 @@ a{color:inherit}
   <!-- TAB 2: SEARCH BY SIZE (native explorer) -->
   <div id="tab-global" class="tab-panel hidden">
     <div class="global-intro">
-      <h2>Search our full range by size</h2>
-      <p>Browse every tyre we stock. Pick your width, profile and rim — or type a size directly.</p>
+      <h2 data-i18n="g_title">Search our full range by size</h2>
+      <p data-i18n="g_sub">Browse every tyre we stock. Pick your width, profile and rim — or type a size directly.</p>
       <div class="pill-row" style="margin-top:10px">
-        <span class="pill">95 Sizes In Stock</span>
-        <span class="pill">5 Tyre Lines</span>
-        <span class="pill">Cars · SUV · Commercial · Performance</span>
+        <span class="pill" data-i18n="g_pill1">95 Sizes In Stock</span>
+        <span class="pill" data-i18n="g_pill2">5 Tyre Lines</span>
+        <span class="pill" data-i18n="g_pill3">Cars · SUV · Commercial · Performance</span>
       </div>
     </div>
     <div class="size-explorer">
       <div class="explorer-grid">
         <div class="ex-field">
-          <label>Width (mm)</label>
-          <select id="exWidth" class="ex-select mono"><option value="">Any width</option></select>
+          <label data-i18n="ex_width">Width (mm)</label>
+          <select id="exWidth" class="ex-select mono"><option value="" data-i18n="ex_any_width">Any width</option></select>
         </div>
         <div class="ex-field">
-          <label>Profile (%)</label>
-          <select id="exProfile" class="ex-select mono"><option value="">Any profile</option></select>
+          <label data-i18n="ex_profile">Profile (%)</label>
+          <select id="exProfile" class="ex-select mono"><option value="" data-i18n="ex_any_profile">Any profile</option></select>
         </div>
         <div class="ex-field">
-          <label>Rim (inch)</label>
-          <select id="exRim" class="ex-select mono"><option value="">Any rim</option></select>
+          <label data-i18n="ex_rim">Rim (inch)</label>
+          <select id="exRim" class="ex-select mono"><option value="" data-i18n="ex_any_rim">Any rim</option></select>
         </div>
       </div>
       <div class="explorer-foot">
-        <span class="ex-divider">or type a size</span>
+        <span class="ex-divider" data-i18n="ex_or_type">or type a size</span>
         <div class="size-input-row">
           <input class="size-input mono" id="globalSizeInput" placeholder="e.g. 235/55R18" autocomplete="off">
-          <button class="search-btn" onclick="checkGlobalStock()">Check Stock</button>
+          <button class="search-btn" onclick="checkGlobalStock()" data-i18n="check_stock">Check Stock</button>
         </div>
       </div>
     </div>
@@ -334,15 +369,15 @@ a{color:inherit}
   <div id="tab-manual" class="tab-panel hidden">
     <div class="manual-wrap">
       <div class="manual-intro">
-        <h2>Enter your tyre size</h2>
-        <p>Type the size on your current tyre's sidewall.</p>
+        <h2 data-i18n="m_title">Enter your tyre size</h2>
+        <p data-i18n="m_sub">Type the size on your current tyre's sidewall.</p>
       </div>
       <div class="size-input-row">
         <input class="size-input mono" id="manualSizeInput" placeholder="e.g. 235/55R18" autocomplete="off">
-        <button class="search-btn" onclick="searchManual()">Search</button>
+        <button class="search-btn" onclick="searchManual()" data-i18n="search">Search</button>
       </div>
       <div id="manualResults" style="margin-top:24px;text-align:left"></div>
-      <div class="manual-hint">Not sure of your size? Use the Popular Vehicles tab.</div>
+      <div class="manual-hint" data-i18n="m_hint">Not sure of your size? Use the Popular Vehicles tab.</div>
     </div>
   </div>
 
@@ -359,12 +394,12 @@ a{color:inherit}
   <div class="chat-header">
     <div class="chat-bot-ico"><i data-lucide="bot"></i></div>
     <div>
-      <div class="chat-title">Tyre Advisor</div>
-      <div class="chat-online"><span class="online-dot"></span>Online</div>
+      <div class="chat-title" data-i18n="chat_title">Tyre Advisor</div>
+      <div class="chat-online"><span class="online-dot"></span><span data-i18n="chat_online">Online</span></div>
     </div>
     <div class="chat-head-actions">
-      <button class="chat-act" title="Reset conversation" onclick="resetChat()"><i data-lucide="rotate-ccw"></i></button>
-      <button class="chat-act" title="Close" onclick="toggleChat()"><i data-lucide="chevron-down"></i></button>
+      <button class="chat-act" data-i18n-title="chat_reset" title="Reset conversation" onclick="resetChat()"><i data-lucide="rotate-ccw"></i></button>
+      <button class="chat-act" data-i18n-title="chat_close" title="Close" onclick="toggleChat()"><i data-lucide="chevron-down"></i></button>
     </div>
   </div>
   <div class="chat-ctx" id="chatCtx"><i data-lucide="car"></i><span>No vehicle selected yet</span></div>
@@ -372,7 +407,7 @@ a{color:inherit}
   <div class="chat-err" id="chatErr">Connection error — please try again.</div>
   <div class="quick-prompts" id="quickPrompts"></div>
   <div class="chat-input-row">
-    <textarea id="chatInput" rows="1" placeholder="Ask about size, grip, load…"></textarea>
+    <textarea id="chatInput" rows="1" data-i18n-ph="chat_ph" placeholder="Ask about size, grip, load…"></textarea>
     <button class="chat-send" onclick="sendFromInput()"><i data-lucide="send"></i></button>
   </div>
 </div>
@@ -384,25 +419,25 @@ a{color:inherit}
     <div id="reserveForm">
       <div class="modal-head">
         <div class="modal-ico"><i data-lucide="circle-dot"></i></div>
-        <h2>Reserve This Tyre</h2>
+        <h2 data-i18n="modal_title">Reserve This Tyre</h2>
       </div>
-      <p class="modal-sub">We will confirm availability and contact you within 2 hours.</p>
+      <p class="modal-sub" data-i18n="modal_sub">We will confirm availability and contact you within 2 hours.</p>
       <div class="field" id="f-name">
-        <label>Full Name</label>
-        <input type="text" id="leadName" placeholder="John Smith">
-        <div class="field-msg">Please enter your name.</div>
+        <label data-i18n="f_name">Full Name</label>
+        <input type="text" id="leadName" data-i18n-ph="name_ph" placeholder="John Smith">
+        <div class="field-msg" data-i18n="err_name">Please enter your name.</div>
       </div>
       <div class="field" id="f-phone">
-        <label>Phone Number</label>
+        <label data-i18n="f_phone">Phone Number</label>
         <input type="tel" id="leadPhone" placeholder="+1 555 000 0000">
-        <div class="field-msg">Please enter a valid phone (at least 8 digits).</div>
+        <div class="field-msg" data-i18n="err_phone">Please enter a valid phone (at least 8 digits).</div>
       </div>
       <div class="field" id="f-tyre">
-        <label>Selected Tyre</label>
+        <label data-i18n="f_tyre">Selected Tyre</label>
         <input type="text" id="leadTyre" placeholder="205/55R16 — VectorX Performance">
-        <div class="field-msg">Please enter a tyre.</div>
+        <div class="field-msg" data-i18n="err_tyre">Please enter a tyre.</div>
       </div>
-      <button class="modal-submit" id="leadSubmit" onclick="submitLead()">Reserve Now</button>
+      <button class="modal-submit" id="leadSubmit" onclick="submitLead()" data-i18n="reserve_now">Reserve Now</button>
     </div>
     <div id="reserveResult" style="display:none"></div>
   </div>
@@ -414,6 +449,184 @@ a{color:inherit}
    ═══════════════════════════════════════════════════════════════ */
 const N8N_CHATBOT_URL = "https://oussama19.app.n8n.cloud/webhook/tyredesk-chatbot";
 const N8N_LEAD_URL    = "https://oussama19.app.n8n.cloud/webhook/tyredesk-lead";
+
+/* ═══════════════════════════════════════════════════════════════
+   INTERNATIONALISATION  —  EN / FR / AR
+   ═══════════════════════════════════════════════════════════════ */
+let LANG = (function(){ try{ return localStorage.getItem('tyredesk_lang') || 'en'; }catch(e){ return 'en'; } })();
+const RTL_LANGS = ['ar'];
+const LANG_NAMES = { en:'English', fr:'Français', ar:'العربية' };
+
+const I18N = {
+  en:{
+    tab_vehicle:"Popular Vehicles", tab_global:"Search by Size", tab_manual:"Enter Size",
+    hero_stock:"Tyres In Stock", hero_makes:"Vehicle Makes", hero_fitments:"Fitments Covered", hero_lines:"Tyre Lines · Browse by Size",
+    v_title:"Find Your Perfect Tyre", v_sub:"Select your vehicle — we show compatible tyres instantly.",
+    pill_makes:"25 Makes Covered", pill_eu:"EU Labels Included", pill_plain:"Plain Language Specs",
+    g_title:"Search our full range by size", g_sub:"Browse every tyre we stock. Pick your width, profile and rim — or type a size directly.",
+    g_pill1:"95 Sizes In Stock", g_pill2:"5 Tyre Lines", g_pill3:"Cars · SUV · Commercial · Performance",
+    ex_width:"Width (mm)", ex_profile:"Profile (%)", ex_rim:"Rim (inch)",
+    ex_any_width:"Any width", ex_any_profile:"Any profile", ex_any_rim:"Any rim", ex_full_c:"Full profile (C)", ex_or_type:"or type a size",
+    check_stock:"Check Stock", search:"Search",
+    m_title:"Enter your tyre size", m_sub:"Type the size on your current tyre's sidewall.", m_hint:"Not sure of your size? Use the Popular Vehicles tab.",
+    chat_title:"Tyre Advisor", chat_online:"Online", chat_reset:"Reset conversation", chat_close:"Close",
+    chat_ctx_none:"No vehicle selected yet", chat_err:"Connection error — please try again.", chat_ph:"Ask about size, grip, load…",
+    chat_welcome:"Hello — I am your Tyre Advisor. I can help you choose between sizes, explain what any spec means in plain English, or answer questions about load ratings, wet grip, and fuel efficiency. What would you like to know?",
+    chat_fallback:"Sorry, I could not process that.",
+    chat_auto:"I found {n} tyres for your {x}. Would you like help choosing between them, or do you have a question about size, load rating, or what any tyre is best for?",
+    modal_title:"Reserve This Tyre", modal_sub:"We will confirm availability and contact you within 2 hours.",
+    f_name:"Full Name", f_phone:"Phone Number", f_tyre:"Selected Tyre", name_ph:"John Smith",
+    err_name:"Please enter your name.", err_phone:"Please enter a valid phone (at least 8 digits).", err_tyre:"Please enter a tyre.",
+    reserve_now:"Reserve Now", sending:"Sending…", res_ok:"Request received — we will contact you within 2 hours.", res_err:"Please call us directly or try again.",
+    stock_in:"In Stock", stock_order:"Order 3-5 days",
+    eu_disc:"EU Performance Label (demo values — your real ratings go here)", eu_fuel:"Fuel", eu_wet:"Wet grip",
+    carries:"Carries {x} kg / tyre", rated:"Rated {x} km/h", xl_chip:"Extra Load — reinforced",
+    best_for:"✓ Best for:", not_ideal:"✕ Not ideal for:",
+    mm_wide:"{x} mm wide", sidewall:"{x}% sidewall", rim_inch:"{x}-inch rim", commercial:"Commercial (C)",
+    step1:"Step 1 · Select Make", step2:"Step 2 · Select Model", step3:"Step 3 · Select Year", step4:"Step 4 · Select Trim",
+    tk_make:"Make", tk_model:"Model", tk_year:"Year", tk_results:"Results",
+    showing_for:"Showing tyres for {x}", oem_found:"OEM sizes found:", start_over:"Start over",
+    f_all:"All", f_instock:"In Stock Only",
+    empty:"No matching tyres in stock for that size in this demo inventory. Try another size or the Popular Vehicles tab.",
+    showing_stock:"Showing stock for", n_matching:"{n} tyres matching {x}", n_instock:"{n} tyres in stock",
+    season_summer:"Summer", season_winter:"Winter", season_all:"All-Season",
+    noise_quiet:"Quiet ride", noise_moderate:"Moderate", noise_loud:"Loud"
+  },
+  fr:{
+    tab_vehicle:"Véhicules populaires", tab_global:"Recherche par taille", tab_manual:"Saisir la taille",
+    hero_stock:"Pneus en stock", hero_makes:"Marques de véhicules", hero_fitments:"Montages couverts", hero_lines:"Gammes de pneus · Par taille",
+    v_title:"Trouvez le pneu parfait", v_sub:"Sélectionnez votre véhicule — nous affichons les pneus compatibles instantanément.",
+    pill_makes:"25 marques couvertes", pill_eu:"Étiquettes UE incluses", pill_plain:"Spécifications en langage clair",
+    g_title:"Recherchez toute notre gamme par taille", g_sub:"Parcourez tous nos pneus. Choisissez largeur, profil et jante — ou saisissez une taille directement.",
+    g_pill1:"95 tailles en stock", g_pill2:"5 gammes de pneus", g_pill3:"Voitures · SUV · Utilitaire · Performance",
+    ex_width:"Largeur (mm)", ex_profile:"Profil (%)", ex_rim:"Jante (pouce)",
+    ex_any_width:"Toutes largeurs", ex_any_profile:"Tous profils", ex_any_rim:"Toutes jantes", ex_full_c:"Profil plein (C)", ex_or_type:"ou saisissez une taille",
+    check_stock:"Vérifier le stock", search:"Rechercher",
+    m_title:"Saisissez la taille de votre pneu", m_sub:"Saisissez la taille inscrite sur le flanc de votre pneu actuel.", m_hint:"Vous ne connaissez pas votre taille ? Utilisez l'onglet Véhicules populaires.",
+    chat_title:"Conseiller pneus", chat_online:"En ligne", chat_reset:"Réinitialiser la conversation", chat_close:"Fermer",
+    chat_ctx_none:"Aucun véhicule sélectionné", chat_err:"Erreur de connexion — veuillez réessayer.", chat_ph:"Posez une question sur la taille, l'adhérence…",
+    chat_welcome:"Bonjour — je suis votre conseiller pneus. Je peux vous aider à choisir entre les tailles, expliquer chaque caractéristique en langage clair, ou répondre à vos questions sur la charge, l'adhérence sur sol mouillé et la consommation de carburant. Que souhaitez-vous savoir ?",
+    chat_fallback:"Désolé, je n'ai pas pu traiter cela.",
+    chat_auto:"J'ai trouvé {n} pneus pour votre {x}. Souhaitez-vous de l'aide pour choisir entre eux, ou avez-vous une question sur la taille, la charge ou l'usage idéal ?",
+    modal_title:"Réserver ce pneu", modal_sub:"Nous confirmerons la disponibilité et vous contacterons sous 2 heures.",
+    f_name:"Nom complet", f_phone:"Numéro de téléphone", f_tyre:"Pneu sélectionné", name_ph:"Jean Dupont",
+    err_name:"Veuillez saisir votre nom.", err_phone:"Veuillez saisir un téléphone valide (au moins 8 chiffres).", err_tyre:"Veuillez saisir un pneu.",
+    reserve_now:"Réserver maintenant", sending:"Envoi…", res_ok:"Demande reçue — nous vous contacterons sous 2 heures.", res_err:"Veuillez nous appeler directement ou réessayer.",
+    stock_in:"En stock", stock_order:"Commande 3-5 j",
+    eu_disc:"Étiquette de performance UE (valeurs démo — vos notes réelles ici)", eu_fuel:"Carburant", eu_wet:"Adhérence humide",
+    carries:"Supporte {x} kg / pneu", rated:"Homologué {x} km/h", xl_chip:"Charge renforcée (XL)",
+    best_for:"✓ Idéal pour :", not_ideal:"✕ Moins adapté à :",
+    mm_wide:"{x} mm de large", sidewall:"{x}% de flanc", rim_inch:"jante {x} pouces", commercial:"Utilitaire (C)",
+    step1:"Étape 1 · Choisir la marque", step2:"Étape 2 · Choisir le modèle", step3:"Étape 3 · Choisir l'année", step4:"Étape 4 · Choisir la finition",
+    tk_make:"Marque", tk_model:"Modèle", tk_year:"Année", tk_results:"Résultats",
+    showing_for:"Pneus pour {x}", oem_found:"Tailles d'origine trouvées :", start_over:"Recommencer",
+    f_all:"Tous", f_instock:"En stock seulement",
+    empty:"Aucun pneu correspondant à cette taille dans cet inventaire de démonstration. Essayez une autre taille ou l'onglet Véhicules populaires.",
+    showing_stock:"Stock pour", n_matching:"{n} pneus correspondant à {x}", n_instock:"{n} pneus en stock",
+    season_summer:"Été", season_winter:"Hiver", season_all:"Toutes saisons",
+    noise_quiet:"Roulement silencieux", noise_moderate:"Modéré", noise_loud:"Bruyant"
+  },
+  ar:{
+    tab_vehicle:"السيارات الشائعة", tab_global:"البحث حسب المقاس", tab_manual:"إدخال المقاس",
+    hero_stock:"إطارات متوفرة", hero_makes:"ماركات السيارات", hero_fitments:"تركيبات مغطاة", hero_lines:"فئات الإطارات · حسب المقاس",
+    v_title:"اعثر على إطارك المثالي", v_sub:"اختر سيارتك — ونعرض لك الإطارات المتوافقة فوراً.",
+    pill_makes:"25 ماركة مغطاة", pill_eu:"ملصقات الاتحاد الأوروبي", pill_plain:"مواصفات بلغة مبسّطة",
+    g_title:"ابحث في مجموعتنا الكاملة حسب المقاس", g_sub:"تصفّح كل الإطارات المتوفرة. اختر العرض والنسبة وقطر الجنط — أو أدخل المقاس مباشرة.",
+    g_pill1:"95 مقاساً متوفراً", g_pill2:"5 فئات إطارات", g_pill3:"سيارات · دفع رباعي · تجاري · أداء",
+    ex_width:"العرض (مم)", ex_profile:"النسبة (%)", ex_rim:"الجنط (إنش)",
+    ex_any_width:"كل العروض", ex_any_profile:"كل النسب", ex_any_rim:"كل الأقطار", ex_full_c:"مقطع كامل (C)", ex_or_type:"أو أدخل مقاساً",
+    check_stock:"التحقق من التوفر", search:"بحث",
+    m_title:"أدخل مقاس إطارك", m_sub:"أدخل المقاس المكتوب على جانب إطارك الحالي.", m_hint:"لا تعرف مقاسك؟ استخدم تبويب السيارات الشائعة.",
+    chat_title:"مستشار الإطارات", chat_online:"متصل", chat_reset:"إعادة ضبط المحادثة", chat_close:"إغلاق",
+    chat_ctx_none:"لم يتم اختيار سيارة بعد", chat_err:"خطأ في الاتصال — يرجى المحاولة مرة أخرى.", chat_ph:"اسأل عن المقاس أو التماسك أو الحمولة…",
+    chat_welcome:"مرحباً — أنا مستشار الإطارات. يمكنني مساعدتك في الاختيار بين المقاسات، وشرح أي مواصفة بلغة بسيطة، والإجابة عن أسئلتك حول الحمولة والتماسك على الطرق المبللة واستهلاك الوقود. كيف يمكنني مساعدتك؟",
+    chat_fallback:"عذراً، لم أتمكن من معالجة ذلك.",
+    chat_auto:"وجدت {n} إطاراً لـ {x}. هل ترغب بمساعدة في الاختيار بينها، أم لديك سؤال عن المقاس أو الحمولة أو الأنسب للاستخدام؟",
+    modal_title:"احجز هذا الإطار", modal_sub:"سنؤكد التوفر ونتواصل معك خلال ساعتين.",
+    f_name:"الاسم الكامل", f_phone:"رقم الهاتف", f_tyre:"الإطار المختار", name_ph:"محمد أحمد",
+    err_name:"يرجى إدخال اسمك.", err_phone:"يرجى إدخال رقم هاتف صحيح (8 أرقام على الأقل).", err_tyre:"يرجى إدخال إطار.",
+    reserve_now:"احجز الآن", sending:"جارٍ الإرسال…", res_ok:"تم استلام الطلب — سنتواصل معك خلال ساعتين.", res_err:"يرجى الاتصال بنا مباشرة أو المحاولة مرة أخرى.",
+    stock_in:"متوفر", stock_order:"طلب خلال 3-5 أيام",
+    eu_disc:"ملصق الأداء الأوروبي (قيم تجريبية — تُوضع تقييماتك الحقيقية هنا)", eu_fuel:"الوقود", eu_wet:"التماسك على المبلل",
+    carries:"يتحمّل {x} كغ / إطار", rated:"حتى {x} كم/س", xl_chip:"حمولة إضافية — معزّز",
+    best_for:"✓ مثالي لـ:", not_ideal:"✕ غير مناسب لـ:",
+    mm_wide:"عرض {x} مم", sidewall:"نسبة {x}%", rim_inch:"قطر {x} إنش", commercial:"تجاري (C)",
+    step1:"الخطوة 1 · اختر الماركة", step2:"الخطوة 2 · اختر الموديل", step3:"الخطوة 3 · اختر السنة", step4:"الخطوة 4 · اختر الفئة",
+    tk_make:"الماركة", tk_model:"الموديل", tk_year:"السنة", tk_results:"النتائج",
+    showing_for:"إطارات لـ {x}", oem_found:"المقاسات الأصلية:", start_over:"البدء من جديد",
+    f_all:"الكل", f_instock:"المتوفر فقط",
+    empty:"لا توجد إطارات مطابقة لهذا المقاس في مخزون العرض التجريبي. جرّب مقاساً آخر أو تبويب السيارات الشائعة.",
+    showing_stock:"التوفر لـ", n_matching:"{n} إطار مطابق لـ {x}", n_instock:"{n} إطار متوفر",
+    season_summer:"صيفي", season_winter:"شتوي", season_all:"لكل الفصول",
+    noise_quiet:"قيادة هادئة", noise_moderate:"متوسط", noise_loud:"مرتفع"
+  }
+};
+
+// Translatable brand descriptions (color + eu live in PROFILES; text lives here)
+const PROFILE_I18N = {
+  Meridian:{
+    en:{segment:"Economy • City", tagline:"Reliable everyday performance at a sensible running cost", best_for:["City commuting","Budget-conscious drivers","Low fuel cost"], not_ideal:["High-speed motorway","Sport driving","Deep snow"]},
+    fr:{segment:"Économique • Ville", tagline:"Des performances fiables au quotidien pour un coût d'usage raisonnable", best_for:["Trajets urbains","Conducteurs économes","Faible coût en carburant"], not_ideal:["Autoroute à grande vitesse","Conduite sportive","Neige profonde"]},
+    ar:{segment:"اقتصادي • المدينة", tagline:"أداء يومي موثوق بتكلفة تشغيل معقولة", best_for:["التنقل داخل المدينة","السائقون المهتمون بالميزانية","استهلاك وقود منخفض"], not_ideal:["الطرق السريعة","القيادة الرياضية","الثلوج الكثيفة"]}
+  },
+  VectorX:{
+    en:{segment:"Performance • Sedan", tagline:"Confident handling for daily driving and wet-road safety", best_for:["Mixed motorway & city","Wet weather safety","Responsive steering"], not_ideal:["Heavy loads","Off-road","Deep snow"]},
+    fr:{segment:"Performance • Berline", tagline:"Une tenue de route sûre au quotidien et une sécurité sur sol mouillé", best_for:["Mixte autoroute & ville","Sécurité par temps humide","Direction réactive"], not_ideal:["Charges lourdes","Tout-terrain","Neige profonde"]},
+    ar:{segment:"أداء • سيدان", tagline:"تحكّم واثق للقيادة اليومية وأمان على الطرق المبللة", best_for:["مزيج الطرق السريعة والمدينة","الأمان في الأجواء الممطرة","توجيه سريع الاستجابة"], not_ideal:["الأحمال الثقيلة","الطرق الوعرة","الثلوج الكثيفة"]}
+  },
+  TerraDrive:{
+    en:{segment:"SUV • 4×4", tagline:"Built for heavier vehicles across motorways and mixed terrain", best_for:["SUV and 4×4 comfort","Motorway cruising","Mixed road conditions"], not_ideal:["Track driving","Deep off-road","Urban fuel efficiency"]},
+    fr:{segment:"SUV • 4×4", tagline:"Conçu pour les véhicules lourds sur autoroute et terrains variés", best_for:["Confort SUV et 4×4","Croisière sur autoroute","Conditions routières variées"], not_ideal:["Conduite sur circuit","Tout-terrain extrême","Économie en ville"]},
+    ar:{segment:"دفع رباعي • SUV", tagline:"مصمّم للمركبات الأثقل على الطرق السريعة والتضاريس المختلطة", best_for:["راحة سيارات الدفع الرباعي","القيادة على الطرق السريعة","ظروف الطرق المتنوعة"], not_ideal:["القيادة على الحلبات","الطرق الوعرة العميقة","توفير الوقود في المدينة"]}
+  },
+  TerraDriveC:{
+    en:{segment:"Commercial • Van", tagline:"Engineered for load-carrying reliability and long service life", best_for:["Commercial deliveries","Heavy loads","Long daily mileage"], not_ideal:["Sport driving","Passenger comfort priority"]},
+    fr:{segment:"Utilitaire • Fourgon", tagline:"Conçu pour la fiabilité sous charge et une longue durée de vie", best_for:["Livraisons commerciales","Charges lourdes","Long kilométrage quotidien"], not_ideal:["Conduite sportive","Priorité au confort des passagers"]},
+    ar:{segment:"تجاري • فان", tagline:"مصمّم لموثوقية حمل الأوزان وعمر خدمة طويل", best_for:["التوصيل التجاري","الأحمال الثقيلة","المسافات اليومية الطويلة"], not_ideal:["القيادة الرياضية","أولوية راحة الركاب"]}
+  },
+  ApexUltra:{
+    en:{segment:"High Performance", tagline:"Maximum grip and precision for performance vehicles", best_for:["Sport and spirited driving","Excellent dry grip","High-speed stability"], not_ideal:["Fuel economy","Heavy vehicles","Rough roads"]},
+    fr:{segment:"Haute performance", tagline:"Adhérence et précision maximales pour véhicules de performance", best_for:["Conduite sportive et dynamique","Excellente adhérence sur sol sec","Stabilité à haute vitesse"], not_ideal:["Économie de carburant","Véhicules lourds","Routes dégradées"]},
+    ar:{segment:"أداء عالٍ", tagline:"أقصى تماسك ودقّة لسيارات الأداء", best_for:["القيادة الرياضية والحماسية","تماسك ممتاز على الجاف","ثبات عند السرعات العالية"], not_ideal:["توفير الوقود","المركبات الثقيلة","الطرق الوعرة"]}
+  }
+};
+
+// EU plain-language, per language and grade
+const EU_FUEL_PLAIN = {
+  en:{A:"Lowest running cost",B:"Low running cost",C:"Average running cost",D:"Slightly higher fuel use",E:"Higher fuel consumption",F:"High fuel consumption",G:"Highest fuel consumption"},
+  fr:{A:"Coût d'usage le plus bas",B:"Faible coût d'usage",C:"Coût d'usage moyen",D:"Consommation un peu plus élevée",E:"Consommation élevée",F:"Forte consommation",G:"Consommation maximale"},
+  ar:{A:"أقل تكلفة تشغيل",B:"تكلفة تشغيل منخفضة",C:"تكلفة تشغيل متوسطة",D:"استهلاك وقود أعلى قليلاً",E:"استهلاك وقود مرتفع",F:"استهلاك وقود عالٍ",G:"أعلى استهلاك وقود"}
+};
+const EU_WET_PLAIN = {
+  en:{A:"Shortest wet stop",B:"Short wet stop",C:"Average wet braking",D:"Slightly longer wet stop",E:"Longer wet stop",F:"Much longer wet stop",G:"Longest wet stop"},
+  fr:{A:"Freinage humide le plus court",B:"Freinage humide court",C:"Freinage humide moyen",D:"Freinage humide un peu plus long",E:"Freinage humide plus long",F:"Freinage humide bien plus long",G:"Freinage humide le plus long"},
+  ar:{A:"أقصر مسافة كبح على المبلل",B:"مسافة كبح قصيرة على المبلل",C:"كبح متوسط على المبلل",D:"مسافة كبح أطول قليلاً",E:"مسافة كبح أطول",F:"مسافة كبح أطول بكثير",G:"أطول مسافة كبح على المبلل"}
+};
+
+// Quick prompts per language and state
+const QUICK_PROMPTS = {
+  en:{ no_results:["What tyre fits my car?","What does XL mean?","What is an EU label?"],
+       has_results:["Which size is better?","What does XL mean?","What's the load rating?","Best for motorways?"],
+       has_tyre:["Is this good for rain?","What's the fuel saving?","How long will it last?","Compare with others"] },
+  fr:{ no_results:["Quel pneu pour ma voiture ?","Que signifie XL ?","Qu'est-ce qu'une étiquette UE ?"],
+       has_results:["Quelle taille est meilleure ?","Que signifie XL ?","Quel est l'indice de charge ?","Idéal pour l'autoroute ?"],
+       has_tyre:["Bon sous la pluie ?","Quelle économie de carburant ?","Quelle durée de vie ?","Comparer avec d'autres"] },
+  ar:{ no_results:["ما الإطار المناسب لسيارتي؟","ماذا يعني XL؟","ما هو ملصق الاتحاد الأوروبي؟"],
+       has_results:["أي مقاس أفضل؟","ماذا يعني XL؟","ما مؤشر الحمولة؟","الأفضل للطرق السريعة؟"],
+       has_tyre:["هل هو جيد للمطر؟","كم يوفّر من الوقود؟","كم يدوم؟","قارن مع غيره"] }
+};
+
+// translate helper: t('key',{x:..}) with {placeholder} substitution + fallback to EN
+function t(key, vars){
+  let s = (I18N[LANG] && I18N[LANG][key]) || I18N.en[key] || key;
+  if(vars) for(const k in vars) s = s.replace('{'+k+'}', vars[k]);
+  return s;
+}
+// localized brand fields
+function profSeg(brand){ const p=PROFILE_I18N[brand]; return (p[LANG]||p.en).segment; }
+function profTag(brand){ const p=PROFILE_I18N[brand]; return (p[LANG]||p.en).tagline; }
+function profBest(brand){ const p=PROFILE_I18N[brand]; return (p[LANG]||p.en).best_for; }
+function profNot(brand){ const p=PROFILE_I18N[brand]; return (p[LANG]||p.en).not_ideal; }
 
 /* ═══════════════ DECODER TABLES (industry-standard) ═══════════════ */
 const LOAD_KG = {
@@ -677,15 +890,13 @@ const VEHICLE_DB = [
 
 /* ═══════════════ EU LABEL PLAIN-LANGUAGE TABLES ═══════════════ */
 const EU_GRADE_COLOR = { A:"#00D26A", B:"#84CC16", C:"#F59E0B", D:"#F97316", E:"#EF4444", F:"#DC2626", G:"#991B1B" };
-const EU_FUEL_PLAIN = { A:"Lowest running cost", B:"Low running cost", C:"Average running cost",
-  D:"Slightly higher fuel use", E:"Higher fuel consumption", F:"High fuel consumption", G:"Highest fuel consumption" };
-const EU_WET_PLAIN = { A:"Shortest wet stop", B:"Short wet stop", C:"Average wet braking",
-  D:"Slightly longer wet stop", E:"Longer wet stop", F:"Much longer wet stop", G:"Longest wet stop" };
-function noiseLabel(db){ return db < 70 ? "Quiet ride" : db <= 75 ? "Moderate" : "Loud"; }
+function euFuelPlain(g){ return (EU_FUEL_PLAIN[LANG]||EU_FUEL_PLAIN.en)[g]; }
+function euWetPlain(g){ return (EU_WET_PLAIN[LANG]||EU_WET_PLAIN.en)[g]; }
+function noiseLabel(db){ return db < 70 ? t('noise_quiet') : db <= 75 ? t('noise_moderate') : t('noise_loud'); }
 function seasonInfo(s){
-  if(s==="winter") return {cls:"season-winter",ico:"snowflake",txt:"Winter"};
-  if(s==="all")    return {cls:"season-all",   ico:"cloud-sun", txt:"All-Season"};
-  return {cls:"season-summer",ico:"sun",txt:"Summer"};
+  if(s==="winter") return {cls:"season-winter",ico:"snowflake",txt:t('season_winter')};
+  if(s==="all")    return {cls:"season-all",   ico:"cloud-sun", txt:t('season_all')};
+  return {cls:"season-summer",ico:"sun",txt:t('season_summer')};
 }
 
 /* ═══════════════ HELPERS ═══════════════ */
@@ -698,10 +909,10 @@ function parseSize(size){
 function sizeSubtitle(size){
   const p = parseSize(size);
   if(!p) return "";
-  const parts = [p.width+" mm wide"];
-  if(p.profile) parts.push(p.profile+"% sidewall");
-  parts.push(p.rim+'-inch rim');
-  return parts.join(" · ") + (p.commercial ? " · Commercial (C)" : "");
+  const parts = [t('mm_wide',{x:p.width})];
+  if(p.profile) parts.push(t('sidewall',{x:p.profile}));
+  parts.push(t('rim_inch',{x:p.rim}));
+  return parts.join(" · ") + (p.commercial ? " · "+t('commercial') : "");
 }
 function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 // Safe JS argument for an inline (double-quoted) HTML attribute: JSON-encode then HTML-escape the quotes.
@@ -712,42 +923,42 @@ function findTyresBySizes(sizes){
 }
 
 /* ═══════════════ TYRE CARD HTML ═══════════════ */
-function tyreCardHTML(t){
-  const prof = PROFILES[t.brand];
-  const dec  = decodeService(t.service);
-  const ssn  = seasonInfo(t.season);
-  const stockIn = t.stock === "in";
+function tyreCardHTML(ty){
+  const prof = PROFILES[ty.brand];
+  const dec  = decodeService(ty.service);
+  const ssn  = seasonInfo(ty.season);
+  const stockIn = ty.stock === "in";
   const fuel = prof.eu.fuel, wet = prof.eu.wet, noise = prof.eu.noise_db;
-  const dataAttr = `data-stock="${t.stock}" data-season="${t.season}" data-brand="${t.brand}"`;
+  const dataAttr = `data-stock="${ty.stock}" data-season="${ty.season}" data-brand="${ty.brand}"`;
   return `
   <div class="tyre-card" ${dataAttr}>
     <div class="tc-row1">
-      <span class="chip brand-chip" style="background:${prof.color}">${esc(t.brand)}</span>
-      <span class="chip seg-chip">${esc(prof.segment)}</span>
+      <span class="chip brand-chip" style="background:${prof.color}">${esc(ty.brand)}</span>
+      <span class="chip seg-chip">${esc(profSeg(ty.brand))}</span>
       <span class="chip season-chip ${ssn.cls}"><i data-lucide="${ssn.ico}"></i>${ssn.txt}</span>
       <span class="stock-badge ${stockIn?'stock-in':'stock-order'}">
-        <i data-lucide="${stockIn?'check-circle':'clock'}"></i>${stockIn?'In Stock':'Order 3-5 days'}
+        <i data-lucide="${stockIn?'check-circle':'clock'}"></i>${stockIn?t('stock_in'):t('stock_order')}
       </span>
     </div>
     <div>
-      <div class="tc-size mono">${esc(t.size)}${t.xl?'<span class="xl-tag">XL</span>':''}</div>
-      <div class="tc-size-sub">${sizeSubtitle(t.size)}</div>
+      <div class="tc-size mono">${esc(ty.size)}${ty.xl?'<span class="xl-tag">XL</span>':''}</div>
+      <div class="tc-size-sub">${sizeSubtitle(ty.size)}</div>
     </div>
-    <div class="tc-tagline">${esc(prof.tagline)}</div>
+    <div class="tc-tagline">${esc(profTag(ty.brand))}</div>
     <div>
-      <div class="eu-disc">EU Performance Label (demo values — your real ratings go here)</div>
+      <div class="eu-disc">${t('eu_disc')}</div>
       <div class="eu-badges">
         <div class="eu-badge">
           <div class="eu-top"><i data-lucide="fuel" class="eu-ico"></i>
             <span class="eu-grade" style="background:${EU_GRADE_COLOR[fuel]}">${fuel}</span>
-            <span class="eu-name">Fuel</span></div>
-          <div class="eu-plain">${EU_FUEL_PLAIN[fuel]}</div>
+            <span class="eu-name">${t('eu_fuel')}</span></div>
+          <div class="eu-plain">${euFuelPlain(fuel)}</div>
         </div>
         <div class="eu-badge">
           <div class="eu-top"><i data-lucide="droplets" class="eu-ico"></i>
             <span class="eu-grade" style="background:${EU_GRADE_COLOR[wet]}">${wet}</span>
-            <span class="eu-name">Wet grip</span></div>
-          <div class="eu-plain">${EU_WET_PLAIN[wet]}</div>
+            <span class="eu-name">${t('eu_wet')}</span></div>
+          <div class="eu-plain">${euWetPlain(wet)}</div>
         </div>
         <div class="eu-badge">
           <div class="eu-top"><i data-lucide="volume-2" class="eu-ico"></i>
@@ -757,19 +968,19 @@ function tyreCardHTML(t){
       </div>
     </div>
     <div class="tc-specs">
-      <span class="spec-chip"><i data-lucide="weight"></i>Carries ${dec.load_kg} kg / tyre</span>
-      <span class="spec-chip"><i data-lucide="gauge"></i>Rated ${dec.speed_kmh} km/h</span>
-      ${t.xl?'<span class="spec-chip xl-chip"><i data-lucide="shield"></i>Extra Load — reinforced</span>':''}
+      <span class="spec-chip"><i data-lucide="weight"></i>${t('carries',{x:dec.load_kg})}</span>
+      <span class="spec-chip"><i data-lucide="gauge"></i>${t('rated',{x:dec.speed_kmh})}</span>
+      ${ty.xl?'<span class="spec-chip xl-chip"><i data-lucide="shield"></i>'+t('xl_chip')+'</span>':''}
     </div>
     <div class="gf-block">
-      <div class="gf-line"><span class="gf-head gf-good">✓ Best for:</span>
-        ${prof.best_for.map(b=>`<span class="gchip">${esc(b)}</span>`).join("")}</div>
-      <div class="gf-line"><span class="gf-head gf-bad">✕ Not ideal for:</span>
-        ${prof.not_ideal.map(b=>`<span class="bchip">${esc(b)}</span>`).join("")}</div>
+      <div class="gf-line"><span class="gf-head gf-good">${t('best_for')}</span>
+        ${profBest(ty.brand).map(b=>`<span class="gchip">${esc(b)}</span>`).join("")}</div>
+      <div class="gf-line"><span class="gf-head gf-bad">${t('not_ideal')}</span>
+        ${profNot(ty.brand).map(b=>`<span class="bchip">${esc(b)}</span>`).join("")}</div>
     </div>
     <div class="tc-footer">
-      <button class="reserve-btn" onclick="openReserve(${jsa(t.size)},${jsa(t.brand)})">
-        <i data-lucide="bookmark"></i>Reserve This Tyre</button>
+      <button class="reserve-btn" onclick="openReserve(${jsa(ty.size)},${jsa(ty.brand)})">
+        <i data-lucide="bookmark"></i>${t('modal_title')}</button>
     </div>
   </div>`;
 }
@@ -779,15 +990,15 @@ function renderResultSet(containerId, tyres, opts){
   opts = opts || {};
   const el = document.getElementById(containerId);
   if(!tyres.length){
-    el.innerHTML = `<div class="empty-note">No matching tyres in stock for that size in this demo inventory. Try another size or the Popular Vehicles tab.</div>`;
+    el.innerHTML = `<div class="empty-note">${t('empty')}</div>`;
     lucide.createIcons();
     return;
   }
   // record brands/seasons present for dynamic filters
-  const brands = [...new Set(tyres.map(t=>t.brand))];
-  const seasons = [...new Set(tyres.map(t=>t.season))];
-  let filters = `<button class="fbtn active" data-f="all" onclick="applyFilter('${containerId}',this,'all')">All</button>
-    <button class="fbtn" data-f="instock" onclick="applyFilter('${containerId}',this,'instock')">In Stock Only</button>`;
+  const brands = [...new Set(tyres.map(x=>x.brand))];
+  const seasons = [...new Set(tyres.map(x=>x.season))];
+  let filters = `<button class="fbtn active" data-f="all" onclick="applyFilter('${containerId}',this,'all')">${t('f_all')}</button>
+    <button class="fbtn" data-f="instock" onclick="applyFilter('${containerId}',this,'instock')">${t('f_instock')}</button>`;
   seasons.forEach(s=>{ const i=seasonInfo(s); filters+=`<button class="fbtn" data-f="season:${s}" onclick="applyFilter('${containerId}',this,'season:${s}')">${i.txt}</button>`; });
   if(brands.length>1) brands.forEach(b=>{ filters+=`<button class="fbtn" data-f="brand:${b}" onclick="applyFilter('${containerId}',this,'brand:${b}')">${esc(b)}</button>`; });
 
@@ -837,10 +1048,10 @@ function switchTab(tab){
 const MAKES = [...new Set(VEHICLE_DB.map(v=>v.make))];
 function renderTracker(){
   const stages = [
-    {k:'make', l:'Make'},
-    {k:'model',l:'Model'},
-    {k:'year', l:'Year'},
-    {k:'results',l:'Results'}
+    {k:'make', l:t('tk_make')},
+    {k:'model',l:t('tk_model')},
+    {k:'year', l:t('tk_year')},
+    {k:'results',l:t('tk_results')}
   ];
   let cur = 'make';
   if(sel.make) cur='model';
@@ -860,7 +1071,7 @@ function renderTracker(){
 function renderSelector(){
   let html = '';
   // STEP 1 — MAKE
-  html += `<div class="step-block"><div class="step-head">Step 1 · Select Make</div><div class="opt-grid grid-make">`;
+  html += `<div class="step-block"><div class="step-head">${t('step1')}</div><div class="opt-grid grid-make">`;
   MAKES.forEach(mk=>{
     const s = sel.make===mk ? 'sel' : '';
     html += `<button class="opt-btn ${s}" onclick="pickMake(${jsa(mk)})">
@@ -871,7 +1082,7 @@ function renderSelector(){
   // STEP 2 — MODEL
   if(sel.make){
     const models = [...new Set(VEHICLE_DB.filter(v=>v.make===sel.make).map(v=>v.model))];
-    html += `<div class="step-block"><div class="step-head">Step 2 · Select Model</div><div class="opt-grid grid-model">`;
+    html += `<div class="step-block"><div class="step-head">${t('step2')}</div><div class="opt-grid grid-model">`;
     models.forEach(md=>{
       const s = sel.model===md ? 'sel' : '';
       html += `<button class="opt-btn ${s}" onclick="pickModel(${jsa(md)})">
@@ -884,7 +1095,7 @@ function renderSelector(){
     const yset = new Set();
     VEHICLE_DB.filter(v=>v.make===sel.make && v.model===sel.model).forEach(v=>v.years.forEach(y=>yset.add(y)));
     const years = [...yset].sort((a,b)=>b-a);
-    html += `<div class="step-block"><div class="step-head">Step 3 · Select Year</div><div class="opt-grid grid-year">`;
+    html += `<div class="step-block"><div class="step-head">${t('step3')}</div><div class="opt-grid grid-year">`;
     years.forEach(y=>{
       const s = sel.year===y ? 'sel' : '';
       html += `<button class="opt-btn year-btn ${s}" onclick="pickYear(${y})">${y}</button>`;
@@ -896,7 +1107,7 @@ function renderSelector(){
     const entries = VEHICLE_DB.filter(v=>v.make===sel.make && v.model===sel.model && v.years.includes(sel.year));
     const trims = [...new Set(entries.map(v=>v.trim))];
     if(trims.length>1){
-      html += `<div class="step-block"><div class="step-head">Step 4 · Select Trim</div><div class="opt-grid grid-trim">`;
+      html += `<div class="step-block"><div class="step-head">${t('step4')}</div><div class="opt-grid grid-trim">`;
       trims.forEach(tr=>{
         const s = sel.trim===tr ? 'sel' : '';
         html += `<button class="opt-btn trim-btn ${s}" onclick="pickTrim(${jsa(tr)})">${esc(tr)}</button>`;
@@ -918,27 +1129,29 @@ function pickYear(y){
 function pickTrim(tr){ sel.trim=tr; renderSelector(); showVehicleResults(); }
 function clearResults(){ document.getElementById('vehicleResults').innerHTML=''; }
 
-function showVehicleResults(){
+function showVehicleResults(silent){
   const entry = VEHICLE_DB.find(v=>v.make===sel.make && v.model===sel.model && v.trim===sel.trim && v.years.includes(sel.year));
   if(!entry){ return; }
   const sizes = entry.sizes;
   const label = `${sel.year} ${sel.make} ${sel.model}${sel.trim && sel.trim!=='Base'?' '+sel.trim:''}`;
   const tyres = findTyresBySizes(sizes);
   window.lastSearch = { label, sizes };
-  window.lastExpandedTyre = null;
+  if(!silent) window.lastExpandedTyre = null;
 
   const headHTML = `
-    <div class="results-head"><div class="veh-summary">Showing tyres for ${esc(label)}</div></div>
-    <div class="oem-row"><span class="oem-lbl">OEM sizes found:</span>
+    <div class="results-head"><div class="veh-summary">${t('showing_for',{x:esc(label)})}</div></div>
+    <div class="oem-row"><span class="oem-lbl">${t('oem_found')}</span>
       ${sizes.map(s=>`<span class="oem-chip">${esc(s)}</span>`).join("")}</div>`;
-  const footHTML = `<button class="ghost-btn" onclick="startOver()"><i data-lucide="rotate-ccw"></i>Start over</button>`;
+  const footHTML = `<button class="ghost-btn" onclick="startOver()"><i data-lucide="rotate-ccw"></i>${t('start_over')}</button>`;
   renderResultSet('vehicleResults', tyres, {headHTML, footHTML});
-  // mark results stage done
   renderTracker();
-  document.getElementById('vehicleResults').scrollIntoView({behavior:'smooth',block:'nearest'});
-  onResultsReady(label, tyres.length);
+  window.rerender = ()=>showVehicleResults(true);
+  if(!silent){
+    document.getElementById('vehicleResults').scrollIntoView({behavior:'smooth',block:'nearest'});
+    onResultsReady(label, tyres.length);
+  }
 }
-function startOver(){ sel={make:null,model:null,year:null,trim:null}; window.lastSearch=null; clearResults(); renderTracker(); renderSelector(); updateChatContext(); updateQuickPrompts(); }
+function startOver(){ sel={make:null,model:null,year:null,trim:null}; window.lastSearch=null; window.rerender=null; clearResults(); renderTracker(); renderSelector(); updateChatContext(); updateQuickPrompts(); }
 
 /* ═══════════════ TAB 2 — NATIVE SIZE EXPLORER ═══════════════ */
 // Build a parsed index of every inventory size: {width, profile(''=none), rim}
@@ -952,14 +1165,21 @@ function fillSelect(el, values, anyLabel, fmt){
   el.innerHTML = `<option value="">${anyLabel}</option>` +
     values.map(v=>`<option value="${v}">${fmt?fmt(v):v}</option>`).join("");
 }
-function buildExplorer(){
-  window.explorerReady = true;
-  const w=document.getElementById('exWidth'), pr=document.getElementById('exProfile'), r=document.getElementById('exRim');
-  fillSelect(w, uniqSorted(SIZE_INDEX.map(s=>s.width)), 'Any width', v=>v+' mm');
+function populateExplorer(){
+  const w=document.getElementById('exWidth'); const prevW=w.value;
+  fillSelect(w, uniqSorted(SIZE_INDEX.map(s=>s.width)), t('ex_any_width'), v=>v+' mm');
+  if([...w.options].some(o=>o.value===prevW)) w.value=prevW;
   refreshProfile(); refreshRim();
-  w.addEventListener('change', ()=>{ refreshProfile(); refreshRim(); runExplorer(); });
-  pr.addEventListener('change', ()=>{ refreshRim(); runExplorer(); });
-  r.addEventListener('change', runExplorer);
+}
+function buildExplorer(){
+  if(!window.explorerReady){
+    window.explorerReady = true;
+    const w=document.getElementById('exWidth'), pr=document.getElementById('exProfile'), r=document.getElementById('exRim');
+    w.addEventListener('change', ()=>{ refreshProfile(); refreshRim(); runExplorer(); });
+    pr.addEventListener('change', ()=>{ refreshRim(); runExplorer(); });
+    r.addEventListener('change', runExplorer);
+  }
+  populateExplorer();
   runExplorer();
 }
 function refreshProfile(){
@@ -969,8 +1189,8 @@ function refreshProfile(){
   let rows = SIZE_INDEX; if(w) rows=rows.filter(s=>s.width===w);
   const profs = uniqSorted(rows.map(s=>s.profile).filter(p=>p!==''));
   const hasCommercial = rows.some(s=>s.profile==='');
-  let html = `<option value="">Any profile</option>` + profs.map(p=>`<option value="${p}">${p}%</option>`).join("");
-  if(hasCommercial) html += `<option value="__none">Full profile (C)</option>`;
+  let html = `<option value="">${t('ex_any_profile')}</option>` + profs.map(p=>`<option value="${p}">${p}%</option>`).join("");
+  if(hasCommercial) html += `<option value="__none">${t('ex_full_c')}</option>`;
   pr.innerHTML = html;
   if([...pr.options].some(o=>o.value===prev)) pr.value=prev;
 }
@@ -982,7 +1202,7 @@ function refreshRim(){
   if(w) rows=rows.filter(s=>s.width===w);
   if(prv==='__none') rows=rows.filter(s=>s.profile==='');
   else if(prv) rows=rows.filter(s=>s.profile===prv);
-  fillSelect(r, uniqSorted(rows.map(s=>s.rim)), 'Any rim', v=>'R'+v);
+  fillSelect(r, uniqSorted(rows.map(s=>s.rim)), t('ex_any_rim'), v=>'R'+v);
   if([...r.options].some(o=>o.value===prev)) r.value=prev;
 }
 function runExplorer(){
@@ -998,11 +1218,14 @@ function runExplorer(){
   const tyres=findTyresBySizes(sizes);
   // Build a readable label of the active filter
   const parts=[]; if(w)parts.push(w); if(prv&&prv!=='__none')parts.push('/'+prv); if(rim)parts.push('R'+rim);
-  const lbl = parts.length ? 'size filter '+parts.join('') : 'full range';
-  window.lastSearch = { label:'Browse — '+(parts.length?parts.join(''):'all sizes'), sizes };
-  window.manualSize = parts.length ? parts.join('') : null;
-  const head = `<div class="results-head"><div class="veh-summary">${tyres.length} tyre${tyres.length!==1?'s':''} ${parts.length?'matching '+esc(parts.join('')):'in stock'}</div></div>`;
+  const sizeStr = parts.join('');
+  const lbl = parts.length ? 'size filter '+sizeStr : 'full range';
+  window.lastSearch = { label:'Browse — '+(parts.length?sizeStr:'all sizes'), sizes };
+  window.manualSize = parts.length ? sizeStr : null;
+  const summary = parts.length ? t('n_matching',{n:tyres.length, x:esc(sizeStr)}) : t('n_instock',{n:tyres.length});
+  const head = `<div class="results-head"><div class="veh-summary">${summary}</div></div>`;
   renderResultSet('globalResults', tyres, {headHTML:head});
+  window.rerender = runExplorer;
   updateChatContext();
   if(tyres.length) onResultsReady(lbl, tyres.length);
 }
@@ -1012,7 +1235,8 @@ function checkGlobalStock(){
   window.manualSize = v;
   const tyres = findTyresBySizes([v]);
   window.lastSearch = { label:'size '+v, sizes:[v] };
-  renderResultSet('globalResults', tyres, {headHTML:`<div class="oem-row"><span class="oem-lbl">Showing stock for</span><span class="oem-chip">${esc(v)}</span></div>`});
+  renderResultSet('globalResults', tyres, {headHTML:`<div class="oem-row"><span class="oem-lbl">${t('showing_stock')}</span><span class="oem-chip">${esc(v)}</span></div>`});
+  window.rerender = checkGlobalStock;
   updateChatContext();
   onResultsReady('size '+v, tyres.length);
 }
@@ -1024,17 +1248,13 @@ function searchManual(){
   window.manualSize = v;
   const tyres = findTyresBySizes([v]);
   window.lastSearch = { label:'size '+v, sizes:[v] };
-  renderResultSet('manualResults', tyres, {headHTML:`<div class="oem-row"><span class="oem-lbl">Showing stock for</span><span class="oem-chip">${esc(v)}</span></div>`});
+  renderResultSet('manualResults', tyres, {headHTML:`<div class="oem-row"><span class="oem-lbl">${t('showing_stock')}</span><span class="oem-chip">${esc(v)}</span></div>`});
+  window.rerender = searchManual;
   updateChatContext();
   onResultsReady('size '+v, tyres.length);
 }
 
 /* ═══════════════ CHATBOT ═══════════════ */
-const QUICK_PROMPTS = {
-  no_results: ["What tyre fits my car?","What does XL mean?","What is an EU label?"],
-  has_results:["Which size is better?","What does XL mean?","What's the load rating?","Best for motorways?"],
-  has_tyre:   ["Is this good for rain?","What's the fuel saving?","How long will it last?","Compare with others"]
-};
 let chatStarted = false;
 function buildContext(){
   const ctx = { tab: window.activeTab || 'vehicle' };
@@ -1053,7 +1273,7 @@ function buildContext(){
 }
 function updateChatContext(){
   const el = document.getElementById('chatCtx');
-  let txt = 'No vehicle selected yet';
+  let txt = t('chat_ctx_none');
   if(window.lastSearch) txt = window.lastSearch.label;
   el.innerHTML = `<i data-lucide="car"></i><span><b>${esc(txt)}</b></span>`;
   lucide.createIcons();
@@ -1063,7 +1283,8 @@ function updateQuickPrompts(){
   if(window.lastExpandedTyre) state='has_tyre';
   else if(window.lastSearch) state='has_results';
   const qp = document.getElementById('quickPrompts');
-  qp.innerHTML = QUICK_PROMPTS[state].map(p=>`<button class="qp" onclick="quickAsk(${jsa(p)})">${esc(p)}</button>`).join("");
+  const list = (QUICK_PROMPTS[LANG]||QUICK_PROMPTS.en)[state];
+  qp.innerHTML = list.map(p=>`<button class="qp" onclick="quickAsk(${jsa(p)})">${esc(p)}</button>`).join("");
 }
 function quickAsk(t){ document.getElementById('chatInput').value=t; sendFromInput(); }
 function toggleChat(){
@@ -1079,7 +1300,7 @@ function toggleChat(){
 function openChat(){ if(!document.getElementById('chatPanel').classList.contains('open')) toggleChat(); }
 function startChat(){
   chatStarted = true;
-  appendBotMessage("Hello — I am your Tyre Advisor. I can help you choose between sizes, explain what any spec means in plain English, or answer questions about load ratings, wet grip, and fuel efficiency. What would you like to know?");
+  appendBotMessage(t('chat_welcome'));
 }
 function resetChat(){
   document.getElementById('chatBody').innerHTML='';
@@ -1108,16 +1329,16 @@ function sendFromInput(){
   appendUserMessage(v); sendChat(v);
 }
 async function sendChat(userMessage){
-  const payload = { message:userMessage, context:JSON.stringify(buildContext()), product:"retail-showroom" };
+  const payload = { message:userMessage, context:JSON.stringify(buildContext()), product:"retail-showroom", lang:LANG, language:LANG_NAMES[LANG] };
   try{
     showTyping();
     const res = await fetch(N8N_CHATBOT_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload) });
     const data = await res.json();
     hideTyping();
-    appendBotMessage(data.reply || "Sorry, I could not process that.");
+    appendBotMessage(data.reply || t('chat_fallback'));
   }catch(e){
     hideTyping();
-    showChatError("Connection error — please try again.");
+    showChatError(t('chat_err'));
   }
 }
 // Auto-activation — fires once per session, 1.5s after first results
@@ -1135,7 +1356,7 @@ function onResultsReady(searchLabel, tyreCount){
       const n = window.lastResultCount != null ? window.lastResultCount : tyreCount;
       if(!document.getElementById('chatPanel').classList.contains('open')){
         openChat();
-        appendBotMessage("I found "+n+" "+(n===1?'tyre':'tyres')+" for your "+ls.label+". Would you like help choosing between them, or do you have a question about size, load rating, or what any tyre is best for?");
+        appendBotMessage(t('chat_auto',{n:n, x:ls.label}));
       }
     },1500);
   }
@@ -1144,9 +1365,9 @@ function onResultsReady(searchLabel, tyreCount){
 /* ═══════════════ LEAD CAPTURE MODAL ═══════════════ */
 function openReserve(size, brand){
   // record the viewed tyre for chatbot context
-  const t = TYRE_INVENTORY.find(x=>x.size===size && x.brand===brand);
-  if(t){ window.lastExpandedTyre = t; updateChatContext(); updateQuickPrompts(); }
-  const seg = PROFILES[brand] ? PROFILES[brand].segment.split('•')[0].trim() : '';
+  const ty = TYRE_INVENTORY.find(x=>x.size===size && x.brand===brand);
+  if(ty){ window.lastExpandedTyre = ty; updateChatContext(); updateQuickPrompts(); }
+  const seg = PROFILE_I18N[brand] ? PROFILE_I18N[brand].en.segment.split('•')[0].trim() : '';
   document.getElementById('leadTyre').value = `${size} — ${brand}${seg?' '+seg:''}`;
   document.getElementById('leadName').value=''; document.getElementById('leadPhone').value='';
   document.getElementById('reserveForm').style.display='block';
@@ -1168,7 +1389,7 @@ async function submitLead(){
   setErr('f-phone', digits<8); if(digits<8) ok=false;
   setErr('f-tyre', !tyre); if(!tyre) ok=false;
   if(!ok) return;
-  const btn=document.getElementById('leadSubmit'); btn.disabled=true; btn.textContent='Sending…';
+  const btn=document.getElementById('leadSubmit'); btn.disabled=true; btn.textContent=t('sending');
   const payload = {
     name, phone, tyre_size:tyre,
     tyre_brand:document.getElementById('leadName').dataset.brand||'',
@@ -1180,27 +1401,52 @@ async function submitLead(){
     showReserveResult(true);
   }catch(e){
     showReserveResult(false);
-  }finally{ btn.disabled=false; btn.textContent='Reserve Now'; }
+  }finally{ btn.disabled=false; btn.textContent=t('reserve_now'); }
 }
 function showReserveResult(success){
   document.getElementById('reserveForm').style.display='none';
   const r=document.getElementById('reserveResult'); r.style.display='block';
   if(success){
     r.className='modal-result';
-    r.innerHTML=`<div class="rok"><i data-lucide="check"></i></div><p>Request received — we will contact you within 2 hours.</p>`;
+    r.innerHTML=`<div class="rok"><i data-lucide="check"></i></div><p>${t('res_ok')}</p>`;
     lucide.createIcons();
     setTimeout(closeReserve,4000);
   }else{
     r.className='modal-result err';
-    r.innerHTML=`<div class="rok"><i data-lucide="alert-triangle"></i></div><p>Please call us directly or try again.</p>`;
+    r.innerHTML=`<div class="rok"><i data-lucide="alert-triangle"></i></div><p>${t('res_err')}</p>`;
     lucide.createIcons();
   }
+}
+
+/* ═══════════════ LANGUAGE SWITCHING ═══════════════ */
+function applyStaticI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent = t(el.getAttribute('data-i18n')); });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{ el.setAttribute('placeholder', t(el.getAttribute('data-i18n-ph'))); });
+  document.querySelectorAll('[data-i18n-title]').forEach(el=>{ el.setAttribute('title', t(el.getAttribute('data-i18n-title'))); });
+}
+function setLang(lang){
+  if(!I18N[lang]) lang='en';
+  LANG = lang;
+  try{ localStorage.setItem('tyredesk_lang', lang); }catch(e){}
+  const rtl = RTL_LANGS.includes(lang);
+  document.documentElement.setAttribute('lang', lang);
+  document.documentElement.setAttribute('dir', rtl?'rtl':'ltr');
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  const btn=document.getElementById('lang-'+lang); if(btn) btn.classList.add('active');
+  applyStaticI18n();
+  // re-render dynamic UI in the new language
+  renderTracker(); renderSelector();
+  if(window.explorerReady){ populateExplorer(); }
+  if(typeof window.rerender === 'function'){ window.rerender(); }
+  updateChatContext(); updateQuickPrompts();
+  lucide.createIcons();
 }
 
 /* ═══════════════ INIT ═══════════════ */
 document.addEventListener('DOMContentLoaded', ()=>{
   renderTracker(); renderSelector();
   updateChatContext(); updateQuickPrompts();
+  setLang(LANG);
   // textarea auto-grow + Enter to send
   const ci=document.getElementById('chatInput');
   ci.addEventListener('input',()=>{ ci.style.height='auto'; ci.style.height=Math.min(ci.scrollHeight,90)+'px'; });
